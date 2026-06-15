@@ -6,10 +6,11 @@ from .models import UserProfile
 def login_page(request):
 
     if request.method == "POST":
+
+        print("post received")
         
         username=request.POST.get('username')
         password=request.POST.get('password')
-        role=request.POST.get('role')
 
         user=authenticate(
             username=username,
@@ -18,18 +19,22 @@ def login_page(request):
 
         if user is not None:
 
+            print("user authenticated")
+
             login(request,user)
 
-            if user.is_superuser and role=='admin':
-                return redirect("/admin_dashboard/")
+            if user.is_superuser:
+                return redirect("/api/adminapp/")
             
             profile=UserProfile.objects.get(user=user)
 
-            if profile.role=='theatre' and role=='theatre':
-                return redirect("/theatre_dashboard/")
+            if profile.role=='theatre':
+                return redirect("/api/theatre/")
             
-            elif profile.role=='user' and role=='user':
-                return redirect("/user_dashboard/")
+            elif profile.role=='user':
+                print(profile.role)
+                print("redirecting to user dashboard")
+                return redirect("/api/user/")
             
 
         else:

@@ -1,0 +1,31 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+.sidebar{
+    width: 225px;
+    height: 100vh;
+    background: rgb(188, 56, 56);
+    position: fixed;
+    left: 0;
+    top: 0;
+
+}
+
+.logo{
+
+    text-align: center;
+    padding: 20px;
+}
+
+.logo img{
+
+    width: 150px;
+    height: auto;
+}
+.main-container{
+    margin-left: 225px;
+    background: beige;
+}
