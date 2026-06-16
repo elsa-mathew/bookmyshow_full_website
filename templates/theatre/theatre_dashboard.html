@@ -1,61 +1,243 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Theatre Panel</title>
-    <link rel="stylesheet" href="{% static 'css/admin_base.css' %}">
-    {% block css %}
-    {% endblock %}
-</head>
-<body>
-    <div class="sidebar">
+{% extends 'theatre/theatre_base.html' %}
 
-        <div class="logo">
-            <img src="{% static 'images/logo.png' %}" alt="Logo">
-            
-        </div>
-        <ul class="menu">
-            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-            <li><a href="{% url 'category_list' %}">Categories</a></li>
-            <li><a href="{% url 'theatre_list' %}">Theatre</a></li>
-            <li><a href="{% url 'logout' %}">Logout</a></li>
-        </ul>
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/theatre_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard">
+
+    <div class="dashboard-header">
+
+        <h2>
+            Welcome, {{ request.user.username }}
+        </h2>
+
+        <p>
+            Manage your theatre operations from here.
+        </p>
+
     </div>
 
-    <div class="main-container">
+    <!-- Statistics Cards -->
 
-        <div class="navbar">
+    <div class="stats-grid">
 
-            <div class="profile-section">
+        <div class="stat-card">
 
-                <div class="profile-icon">
-                    👤  
-                </div>
+            <h3>Total Screens</h3>
 
-                <div class="profile-info">
-                    {% if request.user.is_superuser %}
-                        <span>Hey , Admin</span>
+            <span>
+                {{ total_screens|default:"0" }}
+            </span>
 
-                    {% else %}
-                        <span>Hey , {{ request.user.userprofile.role|title }}</span>
+        </div>
 
-                    {% endif %}
-                </div>
+        <div class="stat-card">
+
+            <h3>Total Shows</h3>
+
+            <span>
+                {{ total_shows|default:"0" }}
+            </span>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>Today's Bookings</h3>
+
+            <span>
+                {{ today_bookings|default:"0" }}
+            </span>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>Revenue</h3>
+
+            <span>
+                ₹{{ revenue|default:"0" }}
+            </span>
+
+        </div>
+
+    </div>
+    <div class="dashboard-sections">
+
+        <!-- Today's Shows -->
+
+        <div class="section-card">
+
+            <div class="section-header">
+
+                <h3>
+                    Today's Shows
+                </h3>
 
             </div>
 
+            <table class="dashboard-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Movie</th>
+                        <th>Screen</th>
+                        <th>Show Time</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for show in todays_shows %}
+
+                    <tr>
+
+                        <td>
+                            {{ show.movie.name }}
+                        </td>
+
+                        <td>
+                            {{ show.screen.screen_name }}
+                        </td>
+
+                        <td>
+                            {{ show.show_time }}
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="3">
+                            No shows available
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
         </div>
 
-        <div class="content">
+        <!-- Most Booked Movies -->
 
-            {% block content %}
-            {% endblock %}
+        <div class="section-card">
+
+            <div class="section-header">
+
+                <h3>
+                    Most Booked Movies
+                </h3>
+
+            </div>
+
+            <table class="dashboard-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Movie</th>
+                        <th>Bookings</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for movie in top_movies %}
+
+                    <tr>
+
+                        <td>
+                            {{ movie.movie__name }}
+                        </td>
+
+                        <td>
+                            {{ movie.booking_count }}
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="2">
+                            No bookings available
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
 
         </div>
 
     </div>
-{% block js %}
+
+    <!-- Screen Capacity -->
+
+    <div class="section-card">
+
+        <div class="section-header">
+
+            <h3>
+                Screen Capacity
+            </h3>
+
+        </div>
+
+        <div class="screen-grid">
+
+            {% for screen in screens %}
+
+            <div class="screen-card">
+
+                <h4>
+                    {{ screen.screen_name }}
+                </h4>
+
+                <span>
+                    {{ screen.total_seats }} Seats
+                </span>
+
+            </div>
+
+            {% empty %}
+
+            <div class="screen-card">
+
+                <h4>
+                    No Screens Added
+                </h4>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
 {% endblock %}
-</body>
-</html>

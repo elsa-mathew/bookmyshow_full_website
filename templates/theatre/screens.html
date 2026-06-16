@@ -1,0 +1,253 @@
+{% extends 'theatre/theatre_base.html' %}
+
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/screens.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="screen-page">
+
+    <div class="page-header">
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="searchScreen"
+                placeholder="Search Screen"
+            >
+
+        </div>
+
+        <button
+            id="openScreenModal"
+            class="add-btn"
+        >
+            + Add Screen
+        </button>
+
+    </div>
+
+    <!-- Screen Cards -->
+
+    <div
+        id="screenContainer"
+        class="screen-grid"
+    >
+
+    </div>
+
+    <!-- Section Area -->
+
+    <div
+        id="sectionArea"
+        class="section-area"
+    >
+
+        <div class="section-header">
+
+            <h2
+                id="selectedScreenTitle"
+            >
+
+            </h2>
+
+            
+
+        </div>
+
+        <div
+            id="sectionContainer"
+            class="section-grid"
+        >
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Screen Modal -->
+
+<div
+    id="screenModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3
+                id="screenModalTitle"
+            >
+                Add Screen
+            </h3>
+
+            <span
+                id="closeScreenModal"
+            >
+                &times;
+            </span>
+
+        </div>
+
+        <div class="modal-body">
+
+            <input
+                type="text"
+                id="screenName"
+                placeholder="Screen Name"
+            >
+
+            <input
+                type="number"
+                id="totalSeats"
+                placeholder="Total Seats"
+            >
+
+            <select
+                id="screenStatus"
+            >
+
+                <option value="active">
+                    Active
+                </option>
+
+                <option value="inactive">
+                    Inactive
+                </option>
+
+            </select>
+
+            <div
+                class="modal-actions"
+            >
+
+                <button
+                    id="deleteScreen"
+                    class="delete-btn"
+                >
+                    Delete
+                </button>
+
+                <button
+                    id="saveScreen"
+                    class="save-btn"
+                >
+                    Save
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Section Modal -->
+
+<div
+    id="sectionModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3
+                id="sectionModalTitle"
+            >
+                Add Section
+            </h3>
+
+            <span
+                id="closeSectionModal"
+            >
+                &times;
+            </span>
+
+        </div>
+
+        <div class="modal-body">
+
+            <input
+                type="text"
+                id="sectionName"
+                placeholder="Section Name"
+            >
+
+            <input
+                type="number"
+                id="sectionPrice"
+                placeholder="Price"
+            >
+
+            <input
+                type="text"
+                id="startRow"
+                placeholder="Start Row (A)"
+            >
+
+            <input
+                type="text"
+                id="endRow"
+                placeholder="End Row (C)"
+            >
+
+            <input
+                type="number"
+                id="columns"
+                placeholder="Columns"
+            >
+
+            <select
+                id="sectionStatus"
+            >
+
+                <option value="active">
+                    Active
+                </option>
+
+                <option value="inactive">
+                    Inactive
+                </option>
+
+            </select>
+
+            <div
+                class="modal-actions"
+            >
+
+                <button
+                    id="deleteSection"
+                    class="delete-btn"
+                >
+                    Delete
+                </button>
+
+                <button
+                    id="saveSection"
+                    class="save-btn"
+                >
+                    Save
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/screens.js' %}"></script>
+{% endblock %}

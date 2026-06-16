@@ -35,6 +35,7 @@ class Screen(models.Model):
 
     theatre = models.ForeignKey(Theatre,on_delete=models.CASCADE)
     screen_name = models.CharField(max_length=50)
+    total_seats = models.IntegerField(default=0)
     status = models.CharField(max_length=20,choices=status_choice,default='active')
     created_at = models.DateTimeField(auto_now_add=True)
 
