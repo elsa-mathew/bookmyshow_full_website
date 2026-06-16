@@ -1,0 +1,201 @@
+
+{% extends 'admin/admin_base.html' %}
+
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/theatre.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="theatre-page">
+
+    <!-- Search -->
+
+    <div class="search-section">
+
+        <input
+            type="text"
+            placeholder="Search Theatre..."
+        >
+
+    </div>
+
+
+
+    <div class="stats-container">
+
+        <div class="stat-card">
+            <h4>Total Theatres</h4>
+            <span>0</span>
+        </div>
+
+        <div class="stat-card">
+            <h4>Active</h4>
+            <span>0</span>
+        </div>
+
+        <div class="stat-card">
+            <h4>Inactive</h4>
+            <span>0</span>
+        </div>
+
+        <div class="stat-card">
+            <h4>Owners</h4>
+            <span>0</span>
+        </div>
+
+    </div>
+
+
+
+    <div class="info-container">
+
+        <div class="info-box">
+
+            <div class="box-header">
+
+                <h3>Recently Added</h3>
+
+            </div>
+
+            <div class="box-body">
+
+                <div class="info-item">
+                    Aries Plex
+                </div>
+
+                <div class="info-item">
+                    Cinepolis
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <div class="box-header">
+
+                <h3>Top Cities</h3>
+
+            </div>
+
+            <div class="box-body">
+
+                <div class="info-item">
+                    Kochi (5)
+                </div>
+
+                <div class="info-item">
+                    Trivandrum (3)
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="theatre-panel">
+
+        <div class="panel-header">
+
+            <h3>Theatres</h3>
+
+            <button
+                id="openTheatreModal"
+                class="add-btn"
+            >
+                +
+            </button>
+
+        </div>
+
+        <div class="panel-body" id="theatreContainer">
+
+            
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="theatreModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3 id="theatreModalTitle">
+                Add Theatre
+            </h3>
+
+            <span id="closeTheatreModal">
+                &times;
+            </span>
+
+        </div>
+
+        <div class="modal-body">
+
+            <input type="text" id="theatreName" placeholder="Theatre Name">
+
+            <input type="text" id="theatreLocation" placeholder="Location">
+
+            <input type="text" id="theatreCity" placeholder="City">
+
+            <input type="text" id="username" placeholder="Username">
+
+            <input type="email" id="email" placeholder="Email">
+
+            <input type="password" id="password" placeholder="Password">
+            
+            <input type="tel" id="phone" placeholder="Phone Number" maxlength="10">
+
+            <select id="theatreStatus">
+
+                <option value="active">
+                    Active
+                </option>
+
+                <option value="inactive">
+                    Inactive
+                </option>
+
+            </select>
+
+            <div class="modal-actions">
+
+                <button
+                    id="deleteTheatre"
+                    class="delete-btn"
+                >
+                    Delete
+                </button>
+
+                <button
+                    id="saveTheatre"
+                    class="save-btn"
+                >
+                    Save
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/theatre.js' %}"></script>
+{% endblock %}

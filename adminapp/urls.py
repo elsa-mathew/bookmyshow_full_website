@@ -11,5 +11,6 @@ urlpatterns = [
     path('api/subcategories/<int:category_id>/',views.get_subcategories,name='get_subcategories'),
     path('api/subcategories/add/',views.add_subcategory,name='add_subcategory'),
     path('api/subcategories/update/<int:id>/',views.update_subcategory,name='update_subcategory'),
+    path('theatres/',views.theatre_list,name='theatre_list'),
     path('logout/',views.logout_view,name='logout'),
 ]

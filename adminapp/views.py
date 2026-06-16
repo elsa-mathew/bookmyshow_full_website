@@ -178,7 +178,11 @@ def update_subcategory(request, id):
             {"error": "Subcategory not found"},
             status=404
         )
+
+def theatre_list(request):
     
+    return render(request,'admin/theatre_list.html')
+
 def logout_view(request):
 
     logout(request)
