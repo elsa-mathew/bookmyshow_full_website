@@ -1,4 +1,9 @@
-from django.http import HttpResponse
+from django.shortcuts import render,redirect
 
 def dashboard(request):
-    return HttpResponse("Theatre Dashboard")
+    
+    user = request.user
+    context = {
+        'user' : user
+    }
+    return render(request,'theatre/theatre_dashboard.html', context)

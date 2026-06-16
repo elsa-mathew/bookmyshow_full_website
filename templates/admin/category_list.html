@@ -1,0 +1,184 @@
+{% extends 'admin/admin_base.html' %}
+
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/category.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="category-page">
+
+    <div class="search-section">
+
+        <input type="text" placeholder="Search Category / Subcategory">
+
+    </div>
+
+    <div class="management-container">
+
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <h3>Categories</h3>
+                <button id="openCategoryModal" class="add-btn">+</button>
+
+            </div>
+            <div class="panel-body">
+
+                {% for category in categories %}
+
+                    <div class="item category-item" data-id="{{ category.id }}" data-name="{{ category.name }}">
+
+                        {{ category.name }}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+            
+        </div>
+
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <h3>Subcategories</h3>
+                <button id="openSubcategoryModal" class="add-btn">+</button>
+            </div>
+
+            <div class="panel-body" id="subcategoryContainer">
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="categoryModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3 id="modalTitle">Add Category</h3>
+
+            <span id="closeCategoryModal">&times;</span>
+
+        </div>
+
+        <div class="modal-body">
+
+            <input
+                type="text"
+                id="categoryName"
+                placeholder="Category Name"
+            >
+
+            <select id="categoryStatus">
+
+                <option value="active">
+                    Active
+                </option>
+
+                <option value="inactive">
+                    Inactive
+                </option>
+
+            </select>
+
+            <div class="modal-actions">
+
+                <button id="deleteCategory">
+                    Delete
+                </button>
+
+                <button id="saveCategory">
+                    Save
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="subcategoryModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3>Add Subcategory</h3>
+
+            <span id="closeSubcategoryModal">&times;</span>
+
+        </div>
+
+        <div class="modal-body">
+
+            <select id="subcategoryCategory">
+
+                {% for category in categories %}
+
+                    <option value="{{ category.id }}">
+                        {{ category.name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+            <input
+                type="text"
+                id="subcategoryName"
+                placeholder="Subcategory Name"
+            >
+
+            <select id="subcategoryStatus">
+
+                <option value="active">
+                    Active
+                </option>
+
+                <option value="inactive">
+                    Inactive
+                </option>
+
+            </select>
+
+            <div class="modal-actions">
+
+    <button id="deleteSubcategory">
+        Delete
+    </button>
+
+    <button id="saveSubcategory">
+        Save
+    </button>
+
+</div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+{% block js %}
+<script src="{% static 'js/category.js' %}"></script>
+{% endblock %}
