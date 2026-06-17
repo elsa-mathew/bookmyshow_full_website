@@ -1,0 +1,441 @@
+{% extends 'theatre/theatre_base.html' %}
+
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/movies.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="movie-page">
+
+    <div class="page-header">
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="searchMovie"
+                placeholder="Search Movie"
+            >
+
+        </div>
+
+        <div class="header-actions">
+
+            <button
+                id="openLanguageModal"
+                class="add-btn"
+            >
+                + Language
+            </button>
+
+            <button
+                id="openGenreModal"
+                class="add-btn"
+            >
+                + Genre
+            </button>
+
+            <button
+                id="openMovieModal"
+                class="add-btn"
+            >
+                + Movie
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="summary-cards">
+
+    <div class="summary-card">
+
+        <h3>
+            Total Movies
+        </h3>
+
+        <span id="movieCount">
+            0
+        </span>
+
+    </div>
+
+    <div class="summary-card">
+
+        <h3>
+            Languages
+        </h3>
+
+        <span id="languageCount">
+            0
+        </span>
+
+    </div>
+
+    <div class="summary-card">
+
+        <h3>
+            Genres
+        </h3>
+
+        <span id="genreCount">
+            0
+        </span>
+
+    </div>
+
+</div>
+
+<div
+    id="languageModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3>
+                Add Language
+            </h3>
+
+            <span
+                id="closeLanguageModal"
+            >
+                &times;
+            </span>
+
+        </div>
+
+        <div class="modal-body">
+
+            <input
+                type="text"
+                id="languageName"
+                placeholder="Language Name"
+            >
+
+            <select
+                id="languageStatus"
+            >
+
+                <option value="active">
+                    Active
+                </option>
+
+                <option value="inactive">
+                    Inactive
+                </option>
+
+            </select>
+
+            <div class="modal-actions">
+
+                <button
+                    id="saveLanguage"
+                    class="save-btn"
+                >
+                    Save
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<div
+    id="genreModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3>
+                Add Genre
+            </h3>
+
+            <span
+                id="closeGenreModal"
+            >
+                &times;
+            </span>
+
+        </div>
+
+        <div class="modal-body">
+
+            <input
+                type="text"
+                id="genreName"
+                placeholder="Genre Name"
+            >
+
+            <select
+                id="genreStatus"
+            >
+
+                <option value="active">
+                    Active
+                </option>
+
+                <option value="inactive">
+                    Inactive
+                </option>
+
+            </select>
+
+            <div class="modal-actions">
+
+                <button
+                    id="saveGenre"
+                    class="save-btn"
+                >
+                    Save
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<div
+    id="movieModal"
+    class="modal"
+>
+
+    <div
+        class="modal-content movie-modal"
+    >
+
+        <div class="modal-header">
+
+            <h3
+                id="movieModalTitle"
+            >
+                Add Movie
+            </h3>
+
+            <span
+                id="closeMovieModal"
+            >
+                &times;
+            </span>
+
+        </div>
+
+        <div class="modal-body">
+
+            <!-- Movie Details -->
+
+            <input
+                type="text"
+                id="movieName"
+                placeholder="Movie Name"
+            >
+
+            <input
+                type="text"
+                id="duration"
+                placeholder="Duration"
+            >
+
+            <label>
+                Languages
+            </label>
+
+            <div
+                id="languageCheckboxContainer"
+                class="checkbox-container"
+            >
+
+            </div>
+
+            <label>
+                Genres
+            </label>
+
+            <div
+                id="genreCheckboxContainer"
+                class="checkbox-container"
+            >
+
+            </div>
+
+            <select
+                id="certificate"
+            >
+
+                <option value="">
+                    Select Certificate
+                </option>
+
+                <option value="U">
+                    U
+                </option>
+
+                <option value="UA">
+                    UA
+                </option>
+
+                <option value="A">
+                    A
+                </option>
+
+            </select>
+
+            <input
+                type="date"
+                id="releaseDate"
+            >
+
+            <input
+                type="file"
+                id="poster"
+            >
+
+            <input
+                type="url"
+                id="trailer"
+                placeholder="Trailer URL"
+            >
+
+            <textarea
+                id="description"
+                rows="4"
+                placeholder="Description"
+            ></textarea>
+
+            <select
+                id="movieStatus"
+            >
+
+                <option value="active">
+                    Active
+                </option>
+
+                <option value="inactive">
+                    Inactive
+                </option>
+
+            </select>
+
+            <!-- Cast -->
+
+            <h4>
+                Cast
+            </h4>
+
+            <div
+                id="castContainer"
+            >
+
+            </div>
+
+            <button
+                type="button"
+                id="addCastRow"
+                class="add-btn"
+            >
+                + Add Cast
+            </button>
+
+            <!-- Crew -->
+
+            <h4>
+                Crew
+            </h4>
+
+            <div
+                id="crewContainer"
+            >
+
+            </div>
+
+            <button
+                type="button"
+                id="addCrewRow"
+                class="add-btn"
+            >
+                + Add Crew
+            </button>
+
+            <div
+                class="modal-actions"
+            >
+
+                <button
+                    id="deleteMovie"
+                    class="delete-btn"
+                >
+                    Delete
+                </button>
+
+                <button
+                    id="saveMovie"
+                    class="save-btn"
+                >
+                    Save Movie
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<h3 class="section-title">
+    Language Wise Movies
+</h3>
+
+<div
+    id="languageMovieCards"
+    class="summary-cards"
+>
+
+</div>
+<h3 class="section-title">
+    Languages
+</h3>
+
+<div
+    id="languageContainer"
+    class="language-grid"
+>
+
+</div>
+<h3 class="section-title">
+    Genres
+</h3>
+
+<div
+    id="genreContainer"
+    class="language-grid"
+>
+
+</div>
+
+    <div
+        id="movieContainer"
+        class="movie-grid"
+    >
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/movies.js' %}"></script>
+{% endblock %}

@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User 
-from .models import Theatre , Screen , Section
+from .models import Theatre , Screen , Section ,Language, Genre , Movie , Cast , Crew
 from authenticate.models import UserProfile
 from rest_framework.response import Response
 from .serializers import TheatreSerializer , ScreenSerializer , SectionSerializer
@@ -337,3 +337,309 @@ def delete_section(request,id):
     return Response({
         "message":"Section Deleted"
     })
+
+def movie_list(request):
+
+
+    return render(
+        request,
+        'theatre/movies.html'
+    )
+@api_view(['GET'])
+def get_languages(request):
+
+    languages = Language.objects.filter(
+        status='active'
+    )
+
+    data = [
+
+        {
+            "id": language.id,
+            "name": language.name,
+            "status": language.status
+        }
+
+        for language in languages
+
+    ]
+
+    return Response(data)
+
+@api_view(['GET'])
+def get_genres(request):
+
+    genres = Genre.objects.all()
+
+    data = [
+
+        {
+            "id": genre.id,
+            "name": genre.name,
+            "status": genre.status
+        }
+
+        for genre in genres
+
+    ]
+
+    return Response(data)
+@api_view(['POST'])
+def add_language(request):
+
+    language = Language.objects.create(
+
+        name=request.data.get(
+            'name'
+        ),
+
+        status=request.data.get(
+            'status'
+        )
+
+    )
+
+    return Response({
+        "message":"Language Added"
+    })
+
+@api_view(['PUT'])
+def update_language(request,id):
+
+    language =Language.objects.get(
+            id=id
+        )
+
+    language.name =request.data.get(
+            'name'
+        )
+
+    language.status =request.data.get(
+            'status'
+        )
+
+    language.save()
+
+    return Response({
+        "message":"Updated"
+    })
+
+@api_view(['DELETE'])
+def delete_language(request,id):
+
+    language =Language.objects.get(
+            id=id
+        )
+
+    language.delete()
+
+    return Response({
+        "message":"Deleted"
+    })
+
+@api_view(['POST'])
+def add_genre(request):
+
+    genre = Genre.objects.create(
+
+        name=request.data.get(
+            'name'
+        ),
+
+        status=request.data.get(
+            'status'
+        )
+
+    )
+
+    return Response({
+        "message":"Genre Added"
+    })
+
+@api_view(['PUT'])
+def update_genre(request,id):
+
+    genre = Genre.objects.get(
+        id=id
+    )
+
+    genre.name = request.data.get(
+        'name'
+    )
+
+    genre.status = request.data.get(
+        'status'
+    )
+
+    genre.save()
+
+    return Response({
+        "message":"Updated"
+    })
+
+@api_view(['DELETE'])
+def delete_genre(request,id):
+
+    genre = Genre.objects.get(
+        id=id
+    )
+
+    genre.delete()
+
+    return Response({
+        "message":"Deleted"
+    })
+
+@api_view(['POST'])
+def add_movie(request):
+
+    try:
+
+        movie = Movie.objects.create(
+
+            movie_name =
+                request.data.get(
+                    'movie_name'
+                ),
+
+            duration =
+                request.data.get(
+                    'duration'
+                ),
+
+            certificate =
+                request.data.get(
+                    'certificate'
+                ),
+
+            release_date =
+                request.data.get(
+                    'release_date'
+                ),
+
+            trailer =
+                request.data.get(
+                    'trailer'
+                ),
+
+            description =
+                request.data.get(
+                    'description'
+                ),
+
+            status =
+                request.data.get(
+                    'status'
+                ),
+
+            poster =
+                request.FILES.get(
+                    'poster'
+                )
+
+        )
+
+        # Languages
+
+        language_ids = request.data.getlist(
+            'languages'
+        )
+
+        movie.languages.set(
+
+            Language.objects.filter(
+                id__in=language_ids
+            )
+
+        )
+
+        # Genres
+
+        genre_ids = request.data.getlist(
+            'genres'
+        )
+
+        movie.genres.set(
+
+            Genre.objects.filter(
+                id__in=genre_ids
+            )
+
+        )
+
+        # Cast
+
+        index = 0
+
+        while True:
+
+            actor_name = request.data.get(
+                f'cast[{index}][actor_name]'
+            )
+
+            if not actor_name:
+                break
+
+            Cast.objects.create(
+
+                movie=movie,
+
+                actor_name=actor_name,
+
+                character_name=request.data.get(
+                    f'cast[{index}][character_name]'
+                ),
+
+                actor_image=request.FILES.get(
+                    f'cast[{index}][actor_image]'
+                )
+
+            )
+
+            index += 1
+
+        # Crew
+
+        index = 0
+
+        while True:
+
+            name = request.data.get(
+                f'crew[{index}][name]'
+            )
+
+            if not name:
+                break
+
+            Crew.objects.create(
+
+                movie=movie,
+
+                name=name,
+
+                role=request.data.get(
+                    f'crew[{index}][role]'
+                ),
+
+                image=request.FILES.get(
+                    f'crew[{index}][image]'
+                )
+
+            )
+
+            index += 1
+
+        return Response({
+
+            "message":
+                "Movie Added Successfully"
+
+        })
+
+    except Exception as e:
+
+        return Response({
+
+            "error": str(e)
+
+        }, status=400)

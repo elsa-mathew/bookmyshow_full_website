@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Theatre , Screen , Section
+from .models import Theatre , Screen , Section , Movie
 
 class TheatreSerializer(serializers.ModelSerializer):
 
@@ -24,3 +24,11 @@ class SectionSerializer(
         model = Section
 
         fields = "__all__"
+
+class MovieSerializer(serializers.ModelSerializer):
+
+    class Meta:
+
+        model = Movie
+
+        fields = '__all__'
