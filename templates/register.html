@@ -1,19 +1,263 @@
 <!DOCTYPE html>
-<html>
-    <title>Register Page</title>
-    <body>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Register</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Roboto',sans-serif;
+        }
+
+        body{
+
+            min-height:100vh;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+           
+        }
+
+        .register-container{
+
+            width:450px;
+
+            background:white;
+
+            padding:40px;
+
+            border-radius:15px;
+
+            box-shadow:
+                0 10px 30px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.15
+                );
+        }
+
+        .register-container h1{
+
+            text-align:center;
+
+            color:#f84464;
+
+            margin-bottom:10px;
+        }
+
+        .register-container p{
+
+            text-align:center;
+
+            color:#666;
+
+            margin-bottom:25px;
+        }
+
+        label{
+
+            display:block;
+
+            margin-bottom:8px;
+
+            color:#333;
+
+            font-weight:500;
+        }
+
+        input{
+
+            width:100%;
+
+            padding:12px;
+
+            border:1px solid #ddd;
+
+            border-radius:8px;
+
+            margin-bottom:18px;
+
+            outline:none;
+
+            transition:.3s;
+        }
+
+        input:focus{
+
+            border-color:#f84464;
+
+            box-shadow:
+                0 0 5px
+                rgba(
+                    248,
+                    68,
+                    100,
+                    0.3
+                );
+        }
+
+        button{
+
+            width:100%;
+
+            padding:12px;
+
+            border:none;
+
+            border-radius:8px;
+
+            background:#f84464;
+
+            color:white;
+
+            font-size:16px;
+
+            font-weight:600;
+
+            cursor:pointer;
+
+            transition:.3s;
+        }
+
+        button:hover{
+
+            background:#e33758;
+        }
+
+        .login-text{
+
+            margin-top:20px;
+
+            text-align:center;
+
+            color:#666;
+        }
+
+        .login-text a{
+
+            text-decoration:none;
+
+            color:#f84464;
+
+            font-weight:600;
+        }
+
+        .login-text a:hover{
+
+            text-decoration:underline;
+        }
+
+        .role-select{
+
+            width:100%;
+
+            padding:12px;
+
+            border:1px solid #ddd;
+
+            border-radius:8px;
+
+            margin-bottom:18px;
+
+            outline:none;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="register-container">
+
         <form method="POST">
+
             {% csrf_token %}
-                <h1>Sign Up</h1>
-                <p>Welcome</p><br>
-                <label>Enter your Username</label>
-                <input type="text" name="username" required><br><br>
-                <label>Enter Password</label>
-                <input type="password" name="password" required><br><br>
-                <label>Enter Role</label>
-                <input type="text" name="role" required><br><br>
-                <button type="submit">Register</button>
-                <p>Already have an account ? <a href="/">Login</a></p>
+
+            <h1>Sign Up</h1>
+
+            <p>
+                Create your account
+            </p>
+
+            <label>
+                Username
+            </label>
+
+            <input
+                type="text"
+                name="username"
+                required
+            >
+
+            <label>
+                Password
+            </label>
+
+            <input
+                type="password"
+                name="password"
+                required
+            >
+
+            <label>
+                Role
+            </label>
+
+            <select
+                name="role"
+                class="role-select"
+                required
+            >
+
+                <option value="">
+                    Select Role
+                </option>
+
+                <option value="user">
+                    User
+                </option>
+
+                <option value="theatre">
+                    Theatre
+                </option>
+
+            </select>
+
+            <button type="submit">
+                Register
+            </button>
+
+            <div class="login-text">
+
+                Already have an account?
+
+                <a href="/">
+                    Login
+                </a>
+
+            </div>
+
         </form>
-    </body>
+
+    </div>
+
+</body>
+
 </html>

@@ -1,6 +1,6 @@
 let selectedLanguageId = null;
 let selectedGenreId = null;
-
+let selectedMovieId = null;
 const genreModal =
     document.getElementById(
         "genreModal"
@@ -811,6 +811,13 @@ document
         "addCrewRow"
     ).click();
 
+    selectedMovieId = null;
+
+document.getElementById(
+    "movieModalTitle"
+).innerText =
+    "Add Movie";
+
     movieModal.style.display =
         "flex";
 
@@ -1045,30 +1052,57 @@ document
 
         try{
 
-            const response =
-                await fetch(
-                    "/api/theatre/api/movies/add/",
-                    {
+           let response;
 
-                        method:"POST",
+if(selectedMovieId){
 
-                        credentials:
-                            "same-origin",
+    response =
+        await fetch(
+            `/api/theatre/api/movies/update/${selectedMovieId}/`,
+            {
 
-                        headers:{
+                method:"PUT",
 
-                            "X-CSRFToken":
-                                getCookie(
-                                    "csrftoken"
-                                )
+                credentials:
+                    "same-origin",
 
-                        },
+                headers:{
+                    "X-CSRFToken":
+                        getCookie(
+                            "csrftoken"
+                        )
+                },
 
-                        body:formData
+                body:formData
 
-                    }
-                );
+            }
+        );
 
+}else{
+
+    response =
+        await fetch(
+            "/api/theatre/api/movies/add/",
+            {
+
+                method:"POST",
+
+                credentials:
+                    "same-origin",
+
+                headers:{
+                    "X-CSRFToken":
+                        getCookie(
+                            "csrftoken"
+                        )
+                },
+
+                body:formData
+
+            }
+        );
+
+}
             const data =
                 await response.json();
 
@@ -1112,4 +1146,149 @@ document
         }
 
     }
+
 );
+
+document.addEventListener(
+    "click",
+    function(e){
+
+        if(
+            e.target.classList.contains(
+                "edit-movie-btn"
+            )
+        ){
+
+            selectedMovieId =
+                e.target.dataset.id;
+
+            document.getElementById(
+                "movieName"
+            ).value =
+                e.target.dataset.name;
+
+            document.getElementById(
+                "duration"
+            ).value =
+                e.target.dataset.duration;
+
+            document.getElementById(
+                "certificate"
+            ).value =
+                e.target.dataset.certificate;
+
+            document.getElementById(
+                "releaseDate"
+            ).value =
+                e.target.dataset.release;
+
+            document.getElementById(
+                "trailer"
+            ).value =
+                e.target.dataset.trailer;
+
+            document.getElementById(
+                "description"
+            ).value =
+                e.target.dataset.description;
+
+            document.getElementById(
+                "movieStatus"
+            ).value =
+                e.target.dataset.status;
+
+            document.getElementById(
+                "movieModalTitle"
+            ).innerText =
+                "Edit Movie";
+
+            movieModal.style.display =
+                "flex";
+
+        }
+
+    }
+);
+document.addEventListener(
+    "click",
+    async function(e){
+
+        if(
+            e.target.classList.contains(
+                "delete-movie-btn"
+            )
+        ){
+
+            const id =
+                e.target.dataset.id;
+
+            if(
+                !confirm(
+                    "Delete this movie?"
+                )
+            ){
+                return;
+            }
+
+            const response =
+                await fetch(
+                    `/api/theatre/api/movies/delete/${id}/`,
+                    {
+                        method:"DELETE"
+                    }
+                );
+
+            if(response.ok){
+
+                alert(
+                    "Movie Deleted"
+                );
+
+                location.reload();
+
+            }
+
+        }
+
+    }
+);
+
+const languageCard =
+    document.getElementById(
+        "languageCard"
+    );
+
+const genreCard =
+    document.getElementById(
+        "genreCard"
+    );
+
+const languageSection =
+    document.getElementById(
+        "languageSection"
+    );
+
+const genreSection =
+    document.getElementById(
+        "genreSection"
+    );
+
+languageCard.onclick = () => {
+
+    languageSection.style.display =
+        languageSection.style.display ===
+        "none"
+        ? "block"
+        : "none";
+
+};
+
+genreCard.onclick = () => {
+
+    genreSection.style.display =
+        genreSection.style.display ===
+        "none"
+        ? "block"
+        : "none";
+
+};

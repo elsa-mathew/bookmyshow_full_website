@@ -1,326 +1,771 @@
-let selectedCategoryId = null;
-let selectedSubcategoryId = null;
-const modal = document.getElementById("categoryModal");
+console.log("CATEGORY JS LOADED");
 
-document.getElementById("openCategoryModal").onclick = function(){
+function getCookie(name){
 
-    selectedCategoryId = null;
+    let cookieValue = null;
 
-    document.getElementById("categoryName").value = "";
+    if(
+        document.cookie &&
+        document.cookie !== ''
+    ){
 
-    modal.style.display = "flex";
-};
+        const cookies =
+            document.cookie.split(';');
 
-document.getElementById("closeCategoryModal").onclick = function(){
+        for(
+            let i = 0;
+            i < cookies.length;
+            i++
+        ){
 
-    modal.style.display = "none";
-};
+            const cookie =
+                cookies[i].trim();
 
-document.getElementById("saveCategory")
-.addEventListener("click", async function(){
+            if(
+                cookie.substring(
+                    0,
+                    name.length + 1
+                ) === (name + '=')
+            ){
 
-    const name =
-        document.getElementById("categoryName").value;
+                cookieValue =
+                    decodeURIComponent(
+                        cookie.substring(
+                            name.length + 1
+                        )
+                    );
 
-    const status =
-        document.getElementById("categoryStatus").value;
+                break;
 
-    let url;
-    let method;
+            }
 
-    if(selectedCategoryId){
+        }
 
-        url = `/api/adminapp/api/categories/update/${selectedCategoryId}/`;
-        method = "PUT";
-
-    }else{
-
-        url = "/api/adminapp/api/categories/add/";
-        method = "POST";
     }
 
-    const response = await fetch(url, {
-
-        method: method,
-
-        headers:{
-            "Content-Type":"application/json"
-        },
-
-        body: JSON.stringify({
-            name: name,
-            status: status
-        })
-
-    });
-
-    const data = await response.json();
-
-    console.log(data);
-
-    location.reload();
-
-});
-
-document.querySelectorAll(".item").forEach(item => {
-
-    item.addEventListener("dblclick", function(){
-
-        selectedCategoryId = this.dataset.id;
-
-        document.getElementById("categoryName").value =
-            this.dataset.name;
-
-        document.getElementById("deleteCategory").style.display = "block";
-
-        modal.style.display = "flex";
-
-    });
-
-});
-
-document.getElementById("openCategoryModal").onclick = function(){
-
-    selectedCategoryId = null;
-
-    document.getElementById("categoryName").value = "";
-
-    document.getElementById("deleteCategory").style.display = "none";
-
-    modal.style.display = "flex";
-};
-
-document.getElementById("deleteCategory")
-.addEventListener("click", async function(){
-
-    if(!selectedCategoryId){
-        return;
-    }
-
-    const confirmDelete = confirm(
-        "Are you sure you want to delete this category?"
-    );
-
-    if(!confirmDelete){
-        return;
-    }
-
-    const response = await fetch(
-    `/api/adminapp/api/categories/delete/${selectedCategoryId}/`,
-    {
-        method:"DELETE"
-    }
-);
-
-const data = await response.json();
-
-if(response.ok){
-
-    alert(data.message);
-
-    location.reload();
-
-}else{
-
-    alert(data.error);
+    return cookieValue;
 
 }
 
-});
+let selectedCategoryId = null;
+
+const categoryModal =
+    document.getElementById(
+        "categoryModal"
+    );
+
+const openCategoryBtn =
+    document.getElementById(
+        "openCategoryModal"
+    );
+
+const closeCategoryBtn =
+    document.getElementById(
+        "closeCategoryModal"
+    );
+
+let selectedSubcategoryId =
+    null;
 
 const subcategoryModal =
-    document.getElementById("subcategoryModal");
+    document.getElementById(
+        "subcategoryModal"
+    );
 
+const openSubcategoryBtn =
+    document.getElementById(
+        "openSubcategoryModal"
+    );
 
-document
-.querySelectorAll(".category-item")
-.forEach(item => {
+const closeSubcategoryBtn =
+    document.getElementById(
+        "closeSubcategoryModal"
+    );
 
-    item.addEventListener("click", async function(){
+openCategoryBtn.addEventListener(
+    "click",
+    function(){
 
-        selectedCategoryId =
-            this.dataset.id;
+        selectedCategoryId = null;
+
+        document
+        .getElementById(
+            "categoryName"
+        ).value = "";
+
+        document
+        .getElementById(
+            "categoryStatus"
+        ).value = "active";
+
+        document
+        .getElementById(
+            "modalTitle"
+        ).innerText =
+            "Add Category";
+
+        document
+        .getElementById(
+            "deleteCategory"
+        ).style.display =
+            "none";
+
+        categoryModal.style.display =
+            "flex";
+
+    }
+);
+
+closeCategoryBtn.addEventListener(
+    "click",
+    function(){
+
+        categoryModal.style.display =
+            "none";
+
+    }
+);
+
+window.addEventListener(
+    "click",
+    function(event){
+
+        if(
+            event.target ===
+            categoryModal
+        ){
+
+            categoryModal.style.display =
+                "none";
+
+        }
+
+    }
+);
+
+const saveCategoryBtn =
+    document.getElementById(
+        "saveCategory"
+    );
+
+saveCategoryBtn.addEventListener(
+    "click",
+    async function(){
+
+        const name =
+            document
+            .getElementById(
+                "categoryName"
+            )
+            .value
+            .trim();
+
+        const status =
+            document
+            .getElementById(
+                "categoryStatus"
+            )
+            .value;
+
+        if(!name){
+
+            alert(
+                "Please enter category name"
+            );
+
+            return;
+
+        }
+
+        let url =
+            "/api/adminapp/api/categories/add/";
+
+        let method =
+            "POST";
+
+        if(selectedCategoryId){
+
+            url =
+                `/api/adminapp/api/categories/update/${selectedCategoryId}/`;
+
+            method =
+                "PUT";
+
+        }
 
         const response =
             await fetch(
-                `/api/adminapp/api/subcategories/${selectedCategoryId}/`
+                url,
+                {
+
+                    method:method,
+
+                    credentials:
+                        "same-origin",
+
+                    headers:{
+
+                        "Content-Type":
+                            "application/json",
+
+                        "X-CSRFToken":
+                            getCookie(
+                                "csrftoken"
+                            )
+
+                    },
+
+                    body:JSON.stringify({
+
+                        name:name,
+
+                        status:status
+
+                    })
+
+                }
             );
 
         const data =
             await response.json();
 
-        const container =
-            document.getElementById(
-                "subcategoryContainer"
+        console.log(data);
+
+        if(response.ok){
+
+            alert(
+
+                selectedCategoryId
+
+                ?
+
+                "Category Updated Successfully"
+
+                :
+
+                "Category Added Successfully"
+
             );
 
-        container.innerHTML = "";
+            location.reload();
 
-        data.forEach(subcategory => {
+        }
+        else{
 
-            container.innerHTML += `
-                <div
-                    class="item subcategory-item"
-                    data-id="${subcategory.id}"
-                    data-name="${subcategory.name}"
-                >
-                    ${subcategory.name}
-                </div>
-            `;
+            alert(
+                JSON.stringify(data)
+            );
 
-        });
+        }
 
-     
+    }
+);
+
+document
+.querySelectorAll(
+    ".category-item"
+)
+.forEach(item => {
+
+    item.addEventListener(
+        "dblclick",
+        function(){
+
+            selectedCategoryId =
+                this.dataset.id;
+
+            document
+            .getElementById(
+                "categoryName"
+            ).value =
+                this.dataset.name;
+
+            document
+            .getElementById(
+                "modalTitle"
+            ).innerText =
+                "Edit Category";
+
+            document
+            .getElementById(
+                "deleteCategory"
+            ).style.display =
+                "inline-block";
+
+            categoryModal.style.display =
+                "flex";
+
+        }
+    );
+
+});
+
+const deleteCategoryBtn =
+    document.getElementById(
+        "deleteCategory"
+    );
+
+deleteCategoryBtn.addEventListener(
+    "click",
+    async function(){
+
+        if(
+            !selectedCategoryId
+        ){
+
+            return;
+
+        }
+
+        const confirmDelete =
+            confirm(
+                "Are you sure you want to delete this category?"
+            );
+
+        if(
+            !confirmDelete
+        ){
+
+            return;
+
+        }
+
+        const response =
+            await fetch(
+                `/api/adminapp/api/categories/delete/${selectedCategoryId}/`,
+                {
+
+                    method:"DELETE",
+
+                    credentials:
+                        "same-origin",
+
+                    headers:{
+
+                        "X-CSRFToken":
+                            getCookie(
+                                "csrftoken"
+                            )
+
+                    }
+
+                }
+            );
+
+        const data =
+            await response.json();
+
+        console.log(data);
+
+        if(response.ok){
+
+            alert(
+                data.message
+            );
+
+            location.reload();
+
+        }
+        else{
+
+            alert(
+                data.error ||
+                "Unable to delete category"
+            );
+
+        }
+
+    }
+);
+
+
+openSubcategoryBtn.addEventListener(
+    "click",
+    function(){
+
+        selectedSubcategoryId =
+            null;
+
         document
-        .querySelectorAll(".subcategory-item")
-        .forEach(item => {
+        .getElementById(
+            "subcategoryName"
+        ).value = "";
 
-            item.addEventListener("dblclick", function(){
+        document
+        .getElementById(
+            "subcategoryStatus"
+        ).value = "active";
+
+        document
+        .getElementById(
+            "subcategoryModalTitle"
+        ).innerText =
+            "Add Subcategory";
+
+        document
+        .getElementById(
+            "deleteSubcategory"
+        ).style.display =
+            "none";
+
+        if(
+            selectedCategoryId
+        ){
+
+            document
+            .getElementById(
+                "subcategoryCategory"
+            ).value =
+                selectedCategoryId;
+
+        }
+
+        subcategoryModal.style.display =
+            "flex";
+
+    }
+);
+
+closeSubcategoryBtn.addEventListener(
+    "click",
+    function(){
+
+        subcategoryModal.style.display =
+            "none";
+
+    }
+);
+
+window.addEventListener(
+    "click",
+    function(event){
+
+        if(
+            event.target ===
+            subcategoryModal
+        ){
+
+            subcategoryModal.style.display =
+                "none";
+
+        }
+
+    }
+);
+
+document
+.querySelectorAll(
+    ".category-item"
+)
+.forEach(item => {
+
+    item.addEventListener(
+        "click",
+        async function(){
+
+            selectedCategoryId =
+                this.dataset.id;
+
+            const response =
+                await fetch(
+                    `/api/adminapp/api/subcategories/${selectedCategoryId}/`
+                );
+
+            const data =
+                await response.json();
+
+            const container =
+                document.getElementById(
+                    "subcategoryContainer"
+                );
+
+            container.innerHTML =
+                "";
+
+            data.forEach(
+                subcategory => {
+
+                    container.innerHTML +=
+                    `
+                    <div
+                        class="item subcategory-item"
+                        data-id="${subcategory.id}"
+                        data-name="${subcategory.name}"
+                        data-status="${subcategory.status}"
+                        data-category="${subcategory.category}"
+                    >
+
+                        ${subcategory.name}
+
+                    </div>
+                    `;
+
+                }
+            );
+
+            attachSubcategoryEvents();
+
+        }
+    );
+
+});
+
+function attachSubcategoryEvents(){
+
+    document
+    .querySelectorAll(
+        ".subcategory-item"
+    )
+    .forEach(item => {
+
+        item.addEventListener(
+            "dblclick",
+            function(){
 
                 selectedSubcategoryId =
                     this.dataset.id;
 
-                document.getElementById(
+                document
+                .getElementById(
                     "subcategoryName"
                 ).value =
                     this.dataset.name;
 
-                document.getElementById(
+                document
+                .getElementById(
+                    "subcategoryStatus"
+                ).value =
+                    this.dataset.status;
+
+                document
+                .getElementById(
+                    "subcategoryCategory"
+                ).value =
+                    this.dataset.category;
+
+                document
+                .getElementById(
+                    "subcategoryModalTitle"
+                ).innerText =
+                    "Edit Subcategory";
+
+                document
+                .getElementById(
                     "deleteSubcategory"
-                ).style.display = "block";
+                ).style.display =
+                    "block";
 
                 subcategoryModal.style.display =
                     "flex";
 
-            });
-
-        });
+            }
+        );
 
     });
 
-});
+}
 
-document
-.getElementById("openSubcategoryModal")
-.onclick = function(){
-
-    selectedSubcategoryId = null;
-
+const saveSubcategoryBtn =
     document.getElementById(
-        "subcategoryName"
-    ).value = "";
+        "saveSubcategory"
+    );
 
-    document.getElementById(
-        "deleteSubcategory"
-    ).style.display = "none";
+saveSubcategoryBtn.addEventListener(
+    "click",
+    async function(){
 
-    if(selectedCategoryId){
+        const category =
+            document
+            .getElementById(
+                "subcategoryCategory"
+            )
+            .value;
 
-        document.getElementById(
-            "subcategoryCategory"
-        ).value = selectedCategoryId;
+        const name =
+            document
+            .getElementById(
+                "subcategoryName"
+            )
+            .value
+            .trim();
 
-    }
+        const status =
+            document
+            .getElementById(
+                "subcategoryStatus"
+            )
+            .value;
 
-    subcategoryModal.style.display =
-        "flex";
-};
+        if(!name){
 
-document
-.getElementById("closeSubcategoryModal")
-.onclick = function(){
+            alert(
+                "Please enter subcategory name"
+            );
 
-    subcategoryModal.style.display =
-        "none";
-};
+            return;
 
+        }
 
-document
-.getElementById("saveSubcategory")
-.addEventListener("click", async function(){
+        let url =
+            "/api/adminapp/api/subcategories/add/";
 
-    const category =
-        document.getElementById(
-            "subcategoryCategory"
-        ).value;
+        let method =
+            "POST";
 
-    const name =
-        document.getElementById(
-            "subcategoryName"
-        ).value;
+        if(selectedSubcategoryId){
 
-    const status =
-        document.getElementById(
-            "subcategoryStatus"
-        ).value;
+            url =
+                `/api/adminapp/api/subcategories/update/${selectedSubcategoryId}/`;
 
-    let response;
+            method =
+                "PUT";
 
-    if(selectedSubcategoryId){
+        }
 
-        response =
+        const response =
             await fetch(
-                `/api/adminapp/api/subcategories/update/${selectedSubcategoryId}/`,
+                url,
                 {
-                    method:"PUT",
+
+                    method:method,
+
+                    credentials:
+                        "same-origin",
 
                     headers:{
-                        "Content-Type":"application/json"
+
+                        "Content-Type":
+                            "application/json",
+
+                        "X-CSRFToken":
+                            getCookie(
+                                "csrftoken"
+                            )
+
                     },
 
                     body:JSON.stringify({
+
                         category:category,
+
                         name:name,
+
                         status:status
+
                     })
+
                 }
             );
 
-    }else{
+        const data =
+            await response.json();
 
-        response =
-            await fetch(
-                "/api/adminapp/api/subcategories/add/",
-                {
-                    method:"POST",
+        console.log(data);
 
-                    headers:{
-                        "Content-Type":"application/json"
-                    },
+        if(response.ok){
 
-                    body:JSON.stringify({
-                        category:category,
-                        name:name,
-                        status:status
-                    })
-                }
+            alert(
+
+                selectedSubcategoryId
+
+                ?
+
+                "Subcategory Updated Successfully"
+
+                :
+
+                "Subcategory Added Successfully"
+
             );
-
-    }
-
-    const data =
-        await response.json();
-
-    if(response.ok){
-
-        alert(
-            selectedSubcategoryId
-            ? "Subcategory Updated Successfully"
-            : "Subcategory Added Successfully"
-        );
-
-        setTimeout(() => {
 
             location.reload();
 
-        }, 500);
+        }
+        else{
 
-    }else{
+            alert(
+                JSON.stringify(data)
+            );
 
-        alert(
-            Object.values(data)[0][0]
-        );
+        }
 
     }
+);
 
-});
+const deleteSubcategoryBtn =
+    document.getElementById(
+        "deleteSubcategory"
+    );
+
+deleteSubcategoryBtn.addEventListener(
+    "click",
+    async function(){
+
+        if(
+            !selectedSubcategoryId
+        ){
+
+            return;
+
+        }
+
+        const confirmDelete =
+            confirm(
+                "Are you sure you want to delete this subcategory?"
+            );
+
+        if(
+            !confirmDelete
+        ){
+
+            return;
+
+        }
+
+        const response =
+            await fetch(
+                `/api/adminapp/api/subcategories/delete/${selectedSubcategoryId}/`,
+                {
+
+                    method:"DELETE",
+
+                    credentials:
+                        "same-origin",
+
+                    headers:{
+
+                        "X-CSRFToken":
+                            getCookie(
+                                "csrftoken"
+                            )
+
+                    }
+
+                }
+            );
+
+        const data =
+            await response.json();
+
+        console.log(data);
+
+        if(response.ok){
+
+            alert(
+                data.message
+            );
+
+            location.reload();
+
+        }
+        else{
+
+            alert(
+                data.error ||
+                "Unable to delete subcategory"
+            );
+
+        }
+
+    }
+);

@@ -2,7 +2,6 @@
     width:100%;
 }
 
-/* Header */
 
 .page-header{
     display:flex;
@@ -24,7 +23,7 @@
     outline:none;
 }
 
-/* Buttons */
+
 
 .add-btn{
     padding:12px 20px;
@@ -40,7 +39,7 @@
     background:#1d4ed8;
 }
 
-/* Screen Cards */
+
 
 .screen-grid{
 
@@ -116,7 +115,6 @@
 
 }
 
-/* Section Area */
 
 .section-area{
 
@@ -142,7 +140,7 @@
 
 }
 
-/* Section Cards */
+
 
 .section-grid{
 
@@ -214,7 +212,7 @@
 
 }
 
-/* Modal */
+
 
 .modal{
 

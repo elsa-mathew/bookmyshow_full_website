@@ -1,0 +1,122 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Movie Ticket
+    </title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+</head>
+
+<body>
+
+<div class="ticket-card">
+
+    <div class="ticket-top">
+
+        <div class="ticket-details">
+
+            <h2>
+                {{ booking.show.movie.movie_name }}
+            </h2>
+
+            <p>
+                {{ booking.show.screen.theatre.theatre_name }}
+            </p>
+
+            <p>
+                {{ booking.show.show_date|date:"D, d M Y" }}
+                |
+                {{ booking.show.start_time|time:"h:i A" }}
+            </p>
+
+        </div>
+
+        <div class="ticket-qr">
+
+            <img
+                src="{% static 'images/qr.png' %}"
+                alt="QR Code"
+            >
+
+        </div>
+
+    </div>
+
+    <div class="ticket-divider"></div>
+
+    <div class="ticket-bottom">
+
+        <div class="info-box">
+
+            <span>
+                SCREEN
+            </span>
+
+            <h4>
+                {{ booking.show.screen.screen_name }}
+            </h4>
+
+        </div>
+
+        <div class="info-box">
+
+            <span>
+                SEATS
+            </span>
+
+            <h4>
+
+                {% for booked in booked_seats %}
+
+                    {{ booked.seat.row_name }}{{ booked.seat.seat_number }}
+
+                    {% if not forloop.last %}
+                        ,
+                    {% endif %}
+
+                {% endfor %}
+
+            </h4>
+
+        </div>
+
+        <div class="info-box">
+
+            <span>
+                AMOUNT
+            </span>
+
+            <h4>
+                ₹{{ booking.total_amount }}
+            </h4>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

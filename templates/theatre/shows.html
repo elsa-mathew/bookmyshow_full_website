@@ -1,0 +1,190 @@
+{% extends 'theatre/theatre_base.html' %}
+
+{% load static %}
+
+{% block css %}
+
+<link rel="stylesheet" href="{% static 'css/shows.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="show-page">
+<div class="summary-cards">
+
+    <div class="summary-card">
+        <h3 id="totalMovies">
+    {{ total_movies }}
+</h3>
+        <p>Total Movies</p>
+    </div>
+
+    <div class="summary-card">
+        <h3 id="todayShows">
+    {{ today_shows }}
+</h3>
+        <p>Today's Shows</p>
+    </div>
+
+    <div class="summary-card">
+        <h3 id="activeScreens">
+    {{ active_screens }}
+</h3>
+        <p>Active Screens</p>
+    </div>
+
+ 
+
+</div>
+
+
+<div class="page-header">
+
+
+    <button
+        id="openShowModal"
+        class="add-btn"
+    >
+        + Add Show
+    </button>
+
+</div>
+
+
+<div
+    id="showContainer"
+    class="show-grid"
+>
+
+</div>
+
+
+
+
+
+
+
+<div
+    id="showModal"
+    class="modal"
+>
+
+
+<div
+    class="modal-content show-modal"
+>
+
+    <div
+        class="modal-header"
+    >
+
+        <h3>
+            Add Show
+        </h3>
+
+        <span
+            id="closeShowModal"
+        >
+            &times;
+        </span>
+
+    </div>
+
+    <div
+        class="modal-body"
+    >
+
+        <select
+            id="movieSelect"
+        >
+
+            <option value="">
+                Select Movie
+            </option>
+
+        </select>
+
+        <select
+            id="screenSelect"
+        >
+
+            <option value="">
+                Select Screen
+            </option>
+
+        </select>
+
+        <input
+            type="date"
+            id="showDate"
+        >
+
+        <select
+            id="showStatus"
+        >
+
+            <option value="active">
+                Active
+            </option>
+
+            <option value="inactive">
+                Inactive
+            </option>
+
+            <option value="cancelled">
+                Cancelled
+            </option>
+
+        </select>
+
+        <h4 class="section-heading">
+            Show Times
+        </h4>
+
+        <div
+            id="showTimeContainer"
+        >
+
+        </div>
+
+        <button
+            type="button"
+            id="addShowTime"
+            class="add-btn"
+        >
+            + Add Show Time
+        </button>
+
+        <div
+            class="modal-actions"
+        >
+
+            <button
+                id="deleteShow"
+                class="delete-btn"
+            >
+                Delete
+            </button>
+
+            <button
+                id="saveShow"
+                class="save-btn"
+            >
+                Save Show
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script src="{% static 'js/shows.js' %}"></script>
+
+{% endblock %}

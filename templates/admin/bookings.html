@@ -1,0 +1,308 @@
+{% extends 'admin/admin_base.html' %}
+
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/booking_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="booking-page">
+
+    <!-- Statistics -->
+
+    <div class="stats-container">
+
+        <div class="stat-card">
+            <h4>Total Bookings</h4>
+            <span>{{ total_bookings }}</span>
+        </div>
+
+        <div class="stat-card">
+            <h4>Today's Bookings</h4>
+            <span>{{ todays_bookings }}</span>
+        </div>
+
+        <div class="stat-card">
+            <h4>Confirmed Bookings</h4>
+            <span>{{ confirmed_bookings }}</span>
+        </div>
+
+        <div class="stat-card">
+            <h4>Today's Revenue</h4>
+            <span>₹{{ todays_revenue }}</span>
+        </div>
+
+        <div class="stat-card">
+            <h4>Total Revenue</h4>
+            <span>₹{{ total_revenue }}</span>
+        </div>
+
+    </div>
+
+
+    <!-- Most Booked Movies -->
+
+    <div class="dashboard-section">
+
+        <div class="section-header">
+            <h2>Most Booked Movies</h2>
+        </div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Movie</th>
+                    <th>Bookings</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for movie in movie_stats %}
+
+                <tr>
+
+                    <td>
+                        {{ movie.show__movie__movie_name }}
+                    </td>
+
+                    <td>
+                        {{ movie.total_bookings }}
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="2">
+                        No Data Available
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- Theatre Wise Revenue -->
+
+    <div class="dashboard-section">
+
+        <div class="section-header">
+            <h2>Theatre Wise Revenue</h2>
+        </div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Theatre</th>
+                    <th>Bookings</th>
+                    <th>Revenue</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for theatre in theatre_stats %}
+
+                <tr>
+
+                    <td>
+                        {{ theatre.show__screen__theatre__theatre_name }}
+                    </td>
+
+                    <td>
+                        {{ theatre.total_bookings }}
+                    </td>
+
+                    <td>
+                        ₹{{ theatre.revenue }}
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="3">
+                        No Data Available
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- Top Users -->
+
+    <div class="dashboard-section">
+
+        <div class="section-header">
+            <h2>Top Users</h2>
+        </div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>User</th>
+                    <th>Total Bookings</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for user in top_users %}
+
+                <tr>
+
+                    <td>
+                        {{ user.user__username }}
+                    </td>
+
+                    <td>
+                        {{ user.total_bookings }}
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="2">
+                        No Data Available
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- Recent Bookings -->
+
+    <div class="dashboard-section">
+
+        <div class="section-header">
+            <h2>Recent Bookings</h2>
+        </div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Movie</th>
+                    <th>Theatre</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for booking in recent_bookings %}
+
+                <tr>
+
+                    <td>
+                        #{{ booking.id }}
+                    </td>
+
+                    <td>
+                        {{ booking.user.username }}
+                    </td>
+
+                    <td>
+                        {{ booking.show.movie.movie_name }}
+                    </td>
+
+                    <td>
+                        {{ booking.show.screen.theatre.theatre_name }}
+                    </td>
+
+                    <td>
+                        ₹{{ booking.total_amount }}
+                    </td>
+
+                    <td>
+
+                        <span class="
+                        {% if booking.booking_status == 'confirmed' %}
+                            status-confirmed
+                        {% elif booking.booking_status == 'pending' %}
+                            status-pending
+                        {% else %}
+                            status-cancelled
+                        {% endif %}
+                        ">
+
+                        {{ booking.booking_status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+                        {{ booking.created_at|date:"d M Y" }}
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="7">
+                        No Bookings Found
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

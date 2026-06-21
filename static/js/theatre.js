@@ -108,9 +108,10 @@ document
             `/api/theatre/api/theatres/update/${selectedTheatreId}/`,
             {
                 method:"PUT",
-
+                credentials: "same-origin",
                 headers:{
-                    "Content-Type":"application/json"
+                    "Content-Type":"application/json",
+                    "X-CSRFToken": csrftoken
                 },
 
                 body:JSON.stringify({
@@ -124,13 +125,19 @@ document
 
     }else{
 
+        console.log(
+    "CSRF Token:",
+    csrftoken
+);
+
         response = await fetch(
             "/api/theatre/api/theatres/add/",
             {
                 method:"POST",
-
+                credentials: "same-origin",
                 headers:{
-                    "Content-Type":"application/json"
+                    "Content-Type":"application/json",
+                    "X-CSRFToken": csrftoken
                 },
 
                 body:JSON.stringify({

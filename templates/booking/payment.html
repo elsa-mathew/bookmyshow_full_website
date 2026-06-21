@@ -1,0 +1,301 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Payment</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+
+<div class="payment-page">
+
+<div class="payment-left">
+
+<h2>Payment options</h2>
+
+<div class="payment-container">
+
+<div class="method-content" id="paymentContent">
+
+<div class="method active" id="upiMethod">
+Pay by any UPI App
+</div>
+
+<div class="method" id="cardMethod">
+Debit/Credit Card
+</div>
+
+
+<div class="method" id="voucherMethod">
+Gift Voucher
+</div>
+
+
+
+<div class="method" id="laterMethod">
+Pay Later
+</div>
+
+
+</div>
+
+<div class="method-content">
+
+<h3 id="methodTitle">
+Pay by any UPI App
+</h3>
+
+<div class="upi-box">
+
+<p>
+Scan QR code
+</p>
+
+<span>
+You need to have a registered UPI ID
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="payment-right">
+
+<div class="summary-card">
+
+<div class="summary-top">
+
+<div>
+
+<h3>
+    {{ show.movie.movie_name }}
+</h3>
+
+<p>
+    {{ show.show_date|date:"D, d M, Y" }}
+    |
+    {{ show.start_time|time:"h:i A" }}
+</p>
+
+<p class="light">
+
+    {% for language in show.movie.languages.all %}
+
+        {{ language.name }}
+
+        {% if not forloop.last %}
+            ,
+        {% endif %}
+
+    {% endfor %}
+
+    ({{ show.screen.screen_type }})
+
+</p>
+<p class="light" id="seatInfo"></p>
+<p class="light">
+    {{ show.screen.theatre.theatre_name }}
+    {{ show.screen.theatre.location }}
+    ({{ show.screen.screen_name }})
+</p>
+
+</div>
+
+<div class="ticket-count" id="ticketCount">
+
+</div>
+
+</div>
+
+<div class="cancel-box">
+
+<h4>
+Cancellation Unavailable
+</h4>
+
+<p>
+This venue does not support booking cancellation.
+</p>
+
+</div>
+
+<div class="price-box">
+
+<div class="row">
+
+<span>
+Ticket(s) price
+</span>
+
+<span id="ticketPrice">
+₹0.00
+</span>
+
+</div>
+
+<div class="row">
+
+<span>
+Convenience fees
+</span>
+
+<span id="convFee">
+
+</span>
+
+</div>
+
+<div class="row donation">
+
+<div>
+
+<span>
+Give to Underprivileged Musicians
+</span>
+
+<p class="small">
+(₹1 per ticket) VIEW T&C
+</p>
+
+</div>
+
+<span class="add" id="donation">
+Add ₹2.00
+</span>
+
+</div>
+
+<hr>
+
+<div class="total-row">
+
+<span>
+Order total
+</span>
+
+<span id="orderTotal">
+₹480.84
+</span>
+
+</div>
+
+</div>
+
+<div class="contact-box">
+
+<div class="contact-head">
+
+<span>
+For Sending Booking Details
+</span>
+
+<span class="edit">
+Edit
+</span>
+
+</div>
+
+<p>
++91-9746617309 | elsamathew256@gmail.com
+</p>
+
+<p class="light">
+Kerala (for GST purposes)
+</p>
+
+</div>
+
+<div class="offer-box">
+Apply Offers
+</div>
+
+<div class="consent">
+By proceeding, I express my consent to complete this transaction.
+</div>
+
+<div class="final-pay">
+
+<span>
+Amount Payable
+</span>
+
+<h2 id="payable">
+₹480.84
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="payment-modal" id="paymentModal">
+
+    <div class="payment-box">
+
+        <h2>Card Payment</h2>
+
+        <input
+            type="text"
+            id="cardNumber"
+            placeholder="Card Number"
+            maxlength="16"
+        >
+
+        <input
+            type="text"
+            id="cardHolder"
+            placeholder="Card Holder Name"
+        >
+
+        <div class="card-row">
+
+            <input
+                type="text"
+                id="expiry"
+                placeholder="MM/YY"
+            >
+
+            <input
+                type="password"
+                id="cvv"
+                placeholder="CVV"
+                maxlength="3"
+            >
+
+        </div>
+
+        <button id="confirmCardPayment">
+            Confirm Payment
+        </button>
+
+    </div>
+
+</div>
+<script>
+    const csrftoken =
+        "{{ csrf_token }}";
+</script>
+
+<script src="{% static 'js/script.js' %}"></script>
+
+
+</body>
+
+</html>

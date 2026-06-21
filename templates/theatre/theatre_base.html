@@ -19,9 +19,8 @@
             <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
             <li><a href="{% url 'screen_list' %}">Screens</a></li>
             <li><a href="{% url 'movie_list' %}">Movies</a></li>
-            <li><a href="#">Shows</a></li>
-            <li><a href="#">Bookings</a></li>
-            <li><a href="#">Profile</a></li>
+            <li><a href="{% url 'show_list' %}">Shows</a></li>
+            <li><a href="/api/theatre/booking_dashboard/">Bookings</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
     </div>

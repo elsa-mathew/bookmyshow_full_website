@@ -1,17 +1,186 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
-    <title>Login Page</title>
-    <body>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Roboto',sans-serif;
+        }
+
+        body{
+
+            min-height:100vh;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            
+        }
+
+        .login-container{
+
+            width:400px;
+
+            background:white;
+
+            padding:40px;
+
+            border-radius:15px;
+
+            box-shadow:
+                0 10px 30px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.15
+                );
+        }
+
+        .login-container h1{
+
+            text-align:center;
+
+            color:#f84464;
+
+            margin-bottom:10px;
+        }
+
+        .login-container p{
+
+            text-align:center;
+
+            color:#666;
+
+            margin-bottom:25px;
+        }
+
+        label{
+
+            display:block;
+
+            margin-bottom:8px;
+
+            color:#333;
+
+            font-weight:500;
+        }
+
+        input{
+
+            width:100%;
+
+            padding:12px;
+
+            border:1px solid #ddd;
+
+            border-radius:8px;
+
+            margin-bottom:18px;
+
+            outline:none;
+
+            transition:.3s;
+        }
+
+        input:focus{
+
+            border-color:#f84464;
+
+            box-shadow:
+                0 0 5px
+                rgba(
+                    248,
+                    68,
+                    100,
+                    0.3
+                );
+        }
+
+        button{
+
+            width:100%;
+
+            padding:12px;
+
+            border:none;
+
+            border-radius:8px;
+
+            background:#f84464;
+
+            color:white;
+
+            font-size:16px;
+
+            font-weight:600;
+
+            cursor:pointer;
+
+            transition:.3s;
+        }
+
+        button:hover{
+
+            background:#e33758;
+        }
+
+        .signup-text{
+
+            margin-top:20px;
+
+            text-align:center;
+
+            color:#666;
+        }
+
+        .signup-text a{
+
+            text-decoration:none;
+
+            color:#f84464;
+
+            font-weight:600;
+        }
+
+        .signup-text a:hover{
+
+            text-decoration:underline;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div class="login-container">
         <form method="POST">
             {% csrf_token %}
-                <h1>Login</h1>
-                <p>Welcome back</p><br>
-                <label>Username</label>
-                <input type="text" name="username" required><br><br>
-                <label>Password</label>
-                <input type="password" name="password" required><br><br>
-                <button type="submit">Login</button>
-                <p>Don't have an account ? <a href="/register/">Sign Up</a></p>
-        </form>    
-    </body>
+            <h1>Login</h1>
+            <p>Welcome back</p>
+            <label>Username</label>
+            <input type="text" name="username" required>
+            <label>Password</label>
+            <input type="password" name="password" required>
+            <button type="submit">Login</button>
+            <div class="signup-text">Don't have an account?<a href="/register/">Sign Up</a>
+            </div>
+        </form>
+    </div>
+</body>
 </html>

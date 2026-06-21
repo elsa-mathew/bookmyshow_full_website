@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Seat Layout</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+
+<h1>Sections Count: {{ sections|length }}</h1>
+
+<div class="seat-header">
+
+<div class="seat-header-left">
+
+<div class="back">
+←
+</div>
+<div>
+
+    <h2>
+
+        {{ show.movie.movie_name }}
+
+        -
+
+        (
+
+        {% for language in show.movie.languages.all %}
+
+            {{ language.name }}
+
+            {% if not forloop.last %}
+                ,
+            {% endif %}
+
+        {% endfor %}
+
+        )
+
+    </h2>
+
+    <p>
+
+        {{ show.screen.theatre.theatre_name }}
+
+        |
+
+        {{ show.show_date|date:"D, d M, Y" }}
+
+        |
+
+        {{ show.start_time|time:"h:i A" }}
+
+    </p>
+
+</div>
+
+</div>
+
+
+
+</div>
+
+<div class="show-strip">
+
+<div class="show-time">
+
+    {{ show.start_time|time:"h:i A" }}
+
+    <span>
+        {{ show.screen.screen_name }}
+    </span>
+
+</div>
+
+</div>
+
+<div class="seat-layout">
+
+    {% for section in sections %}
+
+<div class="seat-section">
+
+    <h3>
+        ₹{{ section.price }}
+        {{ section.section_name|upper }}
+    </h3>
+
+    <div class="seat-grid">
+
+        {% regroup section.seat_set.all by row_name as rows %}
+
+        {% for row in rows %}
+
+        <div class="seat-row">
+
+            <div class="row-name">
+                {{ row.grouper }}
+            </div>
+
+            <div class="seat-block">
+
+                {% for seat in row.list %}
+
+                <div
+                    class="seat {% if seat.status == 'inactive' %}sold{% endif %}"
+                    data-seat-id="{{ seat.id }}"
+                    data-seat-label="{{ seat.row_name }}{{ seat.seat_number }}"
+                    data-price="{{ section.price }}"
+                    data-section-name="{{ section.section_name }}"
+                >
+                    {{ seat.seat_number }}
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<div class="screen-wrapper">
+
+<div class="screen"></div>
+
+<p>All eyes this way please</p>
+
+</div>
+
+<div class="legend">
+
+<div>
+<span class="legend-box available"></span>
+Available
+</div>
+
+<div>
+<span class="legend-box selected"></span>
+Selected
+</div>
+
+<div>
+<span class="legend-box sold"></span>
+Sold
+</div>
+
+</div>
+
+</div>
+
+<div class="zoom-buttons">
+
+<button>+</button>
+<button>-</button>
+
+</div>
+
+<div class="bottom-pay">
+
+<div class="offer">
+YES Private Debit Card Offer
+</div>
+
+<button id="pay">
+Pay ₹0
+</button>
+
+</div>
+<script>
+
+    const SHOW_ID =
+        "{{ show.id }}";
+
+   const CSRF_TOKEN =
+    "{{ csrf_token }}";
+</script>
+<script src="{% static 'js/script.js' %}"></script>
+
+</body>
+
+</html>

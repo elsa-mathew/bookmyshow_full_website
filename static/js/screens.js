@@ -1,3 +1,4 @@
+console.log("THEATRE JS LOADED");
 let selectedScreenId = null;
 
 const screenModal =

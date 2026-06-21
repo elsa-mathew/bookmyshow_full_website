@@ -10,88 +10,79 @@
 {% block content %}
 
 <div class="theatre-page">
-
-    <!-- Search -->
-
-    <div class="search-section">
-
-        <input
-            type="text"
-            placeholder="Search Theatre..."
-        >
-
-    </div>
-
-
-
     <div class="stats-container">
+       <div class="stat-card">
+    <h4>Total Theatres</h4>
+    <span>{{ total_theatres }}</span>
+</div>
 
-        <div class="stat-card">
-            <h4>Total Theatres</h4>
-            <span>0</span>
+<div class="stat-card">
+    <h4>Active</h4>
+    <span>{{ active_theatres }}</span>
+</div>
+
+<div class="stat-card">
+    <h4>Inactive</h4>
+    <span>{{ inactive_theatres }}</span>
+</div>
+
+<div class="stat-card">
+    <h4>Owners</h4>
+    <span>{{ owners }}</span>
+</div>
+    </div>
+    <div class="info-container">
+        <div class="info-box">
+            <div class="box-header">
+                <h3>Recently Added</h3>
+            </div>
+                <div class="box-body">
+
+{% for theatre in recent_theatres %}
+
+    <div class="info-item">
+        {{ theatre.theatre_name }}
+    </div>
+
+{% empty %}
+
+    <div class="info-item">
+        No theatres found
+    </div>
+
+{% endfor %}
+
+</div>
+            
+            </div>
         </div>
 
-        <div class="stat-card">
-            <h4>Active</h4>
-            <span>0</span>
-        </div>
 
-        <div class="stat-card">
-            <h4>Inactive</h4>
-            <span>0</span>
-        </div>
+        <div class="info-box">
+            <div class="box-header">
+                <h3>Top Cities</h3>
+            </div>
+            <div class="box-body">
 
-        <div class="stat-card">
-            <h4>Owners</h4>
-            <span>0</span>
-        </div>
+{% for city in top_cities %}
+
+    <div class="info-item">
+
+        {{ city.location }}
+
+        ({{ city.total }})
 
     </div>
 
+{% empty %}
 
+    <div class="info-item">
+        No data found
+    </div>
 
-    <div class="info-container">
+{% endfor %}
 
-        <div class="info-box">
-
-            <div class="box-header">
-
-                <h3>Recently Added</h3>
-
-            </div>
-
-            <div class="box-body">
-
-                <div class="info-item">
-                    Aries Plex
-                </div>
-
-                <div class="info-item">
-                    Cinepolis
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="info-box">
-
-            <div class="box-header">
-
-                <h3>Top Cities</h3>
-
-            </div>
-
-            <div class="box-body">
-
-                <div class="info-item">
-                    Kochi (5)
-                </div>
-
-                <div class="info-item">
-                    Trivandrum (3)
-                </div>
+</div>
 
             </div>
 
@@ -197,5 +188,57 @@
 {% endblock %}
 
 {% block js %}
+
+<script>
+function getCookie(name) {
+
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== '') {
+
+        const cookies =
+            document.cookie.split(';');
+
+        for (
+            let i = 0;
+            i < cookies.length;
+            i++
+        ) {
+
+            const cookie =
+                cookies[i].trim();
+
+            if (
+                cookie.substring(
+                    0,
+                    name.length + 1
+                ) === (name + '=')
+            ) {
+
+                cookieValue =
+                    decodeURIComponent(
+                        cookie.substring(
+                            name.length + 1
+                        )
+                    );
+
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+
+const csrftoken =
+    getCookie('csrftoken');
+
+console.log(
+    "CSRF Token:",
+    csrftoken
+);
+</script>
+
 <script src="{% static 'js/theatre.js' %}"></script>
+
 {% endblock %}

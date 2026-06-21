@@ -11,23 +11,13 @@ urlpatterns = [
     path('api/screens/add/',views.add_screen,name='add_screen'),
     path('api/screens/',views.get_screens,name='get_screens'),
     path('api/screens/update/<int:id>/',views.update_screen,name='update_screen'),
-    path(
-    'api/screens/delete/<int:id>/',
-    views.delete_screen,
-    name='delete_screen'
-),
-    path(
-    'api/sections/add/',
-    views.add_section,
-    name='add_section'
-),
-
+    path('api/screens/delete/<int:id>/',views.delete_screen,name='delete_screen'),
+    path('api/sections/add/',views.add_section,name='add_section'),
     path(
     'api/sections/<int:screen_id>/',
     views.get_sections,
     name='get_sections'
 ),
-
     path(
     'api/sections/update/<int:id>/',
     views.update_section,
@@ -89,4 +79,41 @@ path(
     'api/movies/add/',
     views.add_movie
 ),
+    path('shows/',views.show_list,name='show_list'),
+    path(
+    'api/movies/',
+    views.get_movies,
+    name='get_movies'
+),
+    path(
+    'api/screens/',
+    views.get_screens,
+    name='get_screens'
+),
+    path(
+    'api/shows/add/',
+    views.add_show,
+    name='add_show'
+),
+
+    path('logout/',views.logout_view,name='logout'),
+
+    path(
+    'booking_dashboard/',
+    views.booking_dashboard,
+    name='booking_dashboard'
+),
+
+path(
+    'api/language-movie-count/',
+    views.language_movie_count,
+    name='language_movie_count'
+),
+path(
+    'api/movies/delete/<int:id>/',
+    views.delete_movie,
+    name='delete_movie'
+),
+
+path('api/movies/update/<int:id>/',views.update_movie,name='update_movie'),
 ]

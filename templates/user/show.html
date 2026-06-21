@@ -1,0 +1,250 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Showtime</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+
+<header class="navbar">
+
+<div class="container nav-top">
+
+<div class="nav-left">
+
+<img src="{% static 'images/logo.png' %}" class="logo">
+
+<div class="search">
+<input placeholder="Search for Movies, Events, Plays, Sports and Activities">
+</div>
+
+</div>
+
+<div class="nav-right">
+
+
+</div>
+
+</div>
+
+</header>
+
+<section class="container showtime-header">
+
+    <h1>
+
+        {{ movie.movie_name }}
+
+        -
+
+        (
+
+        {% for language in movie.languages.all %}
+
+            {{ language.name }}
+
+            {% if not forloop.last %}
+                ,
+            {% endif %}
+
+        {% endfor %}
+
+        )
+
+    </h1>
+
+    <div class="tags">
+
+        <span>
+            {{ movie.duration }}
+        </span>
+
+        {% for genre in movie.genres.all %}
+
+            <span>
+                {{ genre.name }}
+            </span>
+
+        {% endfor %}
+
+        <span>
+            {{ movie.certificate }}
+        </span>
+
+    </div>
+
+</section>
+<section class="container date-bar">
+
+    <div class="dates">
+
+        {% for d in dates %}
+
+        <a
+            href="?date={{ d|date:'Y-m-d' }}"
+            style="text-decoration:none;"
+        >
+
+            <div
+                class="date
+                {% if selected_date == d|date:'Y-m-d' %}
+                    active
+                {% elif not selected_date and forloop.first %}
+                    active
+                {% endif %}
+                {% if forloop.counter > 3 %}
+                    disabled
+                {% endif %}
+                "
+            >
+
+                <p>
+                    {{ d|date:"D"|upper }}
+                </p>
+
+                <h3>
+                    {{ d|date:"d" }}
+                </h3>
+
+                <span>
+                    {{ d|date:"M"|upper }}
+                </span>
+
+            </div>
+
+        </a>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+<section class="container theatre-section">
+
+    {% regroup shows by screen.theatre as theatre_list %}
+
+    {% for theatre in theatre_list %}
+
+    <div class="theatre-card">
+
+        <div class="theatre-info">
+
+            <h3>
+                {{ theatre.grouper.theatre_name }}
+            </h3>
+
+            <p>
+                Non-Cancellable
+            </p>
+
+        </div>
+
+        <div class="showtime-buttons">
+
+            {% for show in theatre.list %}
+
+            <button
+                class="time"
+                data-show-id="{{ show.id }}"
+            >
+
+                {{ show.start_time|time:"h:i A" }}
+
+            </button>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <p>
+        No Shows Available
+    </p>
+
+    {% endfor %}
+
+</section>
+
+<div class="empty">
+
+<p>Unable to find what you are looking for?</p>
+
+
+
+</div>
+
+<div class="seat-modal" id="seatModal">
+
+<div class="seat-box">
+
+<h2>How many seats?</h2>
+
+<div class="bike">
+🛵
+</div>
+
+<div class="seat-count">
+
+<span class="num">1</span>
+<span class="num active">2</span>
+<span class="num">3</span>
+<span class="num">4</span>
+<span class="num">5</span>
+<span class="num">6</span>
+<span class="num">7</span>
+<span class="num">8</span>
+<span class="num">9</span>
+<span class="num">10</span>
+
+</div>
+
+<div class="prices">
+
+    {% for section in sections %}
+
+    <div>
+
+        <p>
+            {{ section.section_name }}
+        </p>
+
+        <h4>
+            ₹{{ section.price }}
+        </h4>
+
+        <span>
+            AVAILABLE
+        </span>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+<button type="button" class="select-btn">Select Seats</button>
+
+
+</div>
+
+</div>
+
+<script src="{% static 'js/script.js' %}"></script>
+
+</body>
+
+</html>

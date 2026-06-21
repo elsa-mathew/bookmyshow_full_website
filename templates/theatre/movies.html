@@ -49,45 +49,145 @@
 
     </div>
 
-    <div class="summary-cards">
 
-    <div class="summary-card">
+<div class="summary-cards">
 
-        <h3>
-            Total Movies
-        </h3>
+    <div class="summary-card" id="movieCard">
+
+        <h3>Total Movies</h3>
 
         <span id="movieCount">
-            0
+            {{ total_movies }}
         </span>
 
     </div>
 
-    <div class="summary-card">
+    <div class="summary-card" id="languageCard">
 
-        <h3>
-            Languages
-        </h3>
+        <h3>Languages</h3>
 
         <span id="languageCount">
-            0
+            {{ total_languages }}
         </span>
 
     </div>
 
-    <div class="summary-card">
+    <div class="summary-card" id="genreCard">
 
-        <h3>
-            Genres
-        </h3>
+        <h3>Genres</h3>
 
         <span id="genreCount">
-            0
+            {{ total_genres }}
         </span>
 
     </div>
 
 </div>
+ 
+
+    <div
+        id="languageSection"
+        style="display:none;"
+    >
+
+        <h3 class="section-title">
+            Languages
+        </h3>
+
+        <div
+            id="languageContainer"
+            class="language-grid"
+        >
+
+        </div>
+
+    </div><br><br>
+
+
+
+    <div
+        id="genreSection"
+        style="display:none;"
+    >
+
+        <h3 class="section-title">
+            Genres
+        </h3>
+
+        <div
+            id="genreContainer"
+            class="language-grid"
+        >
+
+        </div>
+
+    </div><br><br>
+
+
+   <h3 class="section-title">
+    Movies
+</h3>
+
+<div class="movie-grid">
+
+{% for movie in movies %}
+
+    <div
+        class="movie-card"
+        data-id="{{ movie.id }}"
+    >
+
+        <img
+            src="{{ movie.poster.url }}"
+            alt="{{ movie.movie_name }}"
+        >
+
+        <h4>
+            {{ movie.movie_name }}
+        </h4>
+
+        <div
+            class="movie-actions"
+        >
+
+         <button
+    class="edit-movie-btn"
+    data-id="{{ movie.id }}"
+    data-name="{{ movie.movie_name }}"
+    data-duration="{{ movie.duration }}"
+    data-certificate="{{ movie.certificate }}"
+    data-release="{{ movie.release_date|date:'Y-m-d' }}"
+    data-trailer="{{ movie.trailer }}"
+    data-description="{{ movie.description }}"
+    data-status="{{ movie.status }}"
+>
+    Edit
+</button>
+
+            <button
+                class="delete-movie-btn"
+                data-id="{{ movie.id }}"
+            >
+                Delete
+            </button>
+
+        </div>
+
+    </div>
+
+{% empty %}
+
+    <p>
+        No Movies Found
+    </p>
+
+{% endfor %}
+
+</div>
+
+
+</div>
+
 
 <div
     id="languageModal"
@@ -148,6 +248,8 @@
     </div>
 
 </div>
+
+
 <div
     id="genreModal"
     class="modal"
@@ -207,6 +309,9 @@
     </div>
 
 </div>
+
+
+
 <div
     id="movieModal"
     class="modal"
@@ -215,6 +320,7 @@
     <div
         class="modal-content movie-modal"
     >
+
 
         <div class="modal-header">
 
@@ -234,7 +340,7 @@
 
         <div class="modal-body">
 
-            <!-- Movie Details -->
+         
 
             <input
                 type="text"
@@ -328,7 +434,7 @@
 
             </select>
 
-            <!-- Cast -->
+
 
             <h4>
                 Cast
@@ -348,7 +454,7 @@
                 + Add Cast
             </button>
 
-            <!-- Crew -->
+
 
             <h4>
                 Crew
@@ -394,42 +500,6 @@
 
 </div>
 
-<h3 class="section-title">
-    Language Wise Movies
-</h3>
-
-<div
-    id="languageMovieCards"
-    class="summary-cards"
->
-
-</div>
-<h3 class="section-title">
-    Languages
-</h3>
-
-<div
-    id="languageContainer"
-    class="language-grid"
->
-
-</div>
-<h3 class="section-title">
-    Genres
-</h3>
-
-<div
-    id="genreContainer"
-    class="language-grid"
->
-
-</div>
-
-    <div
-        id="movieContainer"
-        class="movie-grid"
-    >
-
     </div>
 
 </div>
@@ -437,5 +507,51 @@
 {% endblock %}
 
 {% block js %}
+
 <script src="{% static 'js/movies.js' %}"></script>
+
+<script>
+
+const languageCard =
+    document.getElementById(
+        "languageCard"
+    );
+
+const genreCard =
+    document.getElementById(
+        "genreCard"
+    );
+
+const languageSection =
+    document.getElementById(
+        "languageSection"
+    );
+
+const genreSection =
+    document.getElementById(
+        "genreSection"
+    );
+
+languageCard.onclick = () => {
+
+    languageSection.style.display =
+        languageSection.style.display ===
+        "none"
+        ? "block"
+        : "none";
+
+};
+
+genreCard.onclick = () => {
+
+    genreSection.style.display =
+        genreSection.style.display ===
+        "none"
+        ? "block"
+        : "none";
+
+};
+
+</script>
+
 {% endblock %}

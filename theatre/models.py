@@ -16,11 +16,7 @@ class Theatre(models.Model):
     status = models.CharField(max_length=20,choices=status_choice,default='active')
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-
-        unique_together = (
-            'owner' , 'theatre_name'
-        )
+  
 
     def __str__(self):
         return f"{self.owner} - {self.theatre_name}"
@@ -39,11 +35,7 @@ class Screen(models.Model):
     status = models.CharField(max_length=20,choices=status_choice,default='active')
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-
-        unique_together = (
-            'theatre' , 'screen_name'
-        )
+  
 
     def __str__(self):
         return f"{self.theatre} - {self.screen_name}"
@@ -65,11 +57,6 @@ class Section(models.Model):
     status = models.CharField(max_length=20,choices=status_choice,default='active')
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-
-        unique_together = (
-            'screen' , 'section_name'
-        )
 
     def __str__(self):
         return f"{self.screen} - {self.section_name}"
@@ -82,15 +69,11 @@ class Seat(models.Model):
     )
 
     section = models.ForeignKey(Section,on_delete=models.CASCADE)
+    row_name = models.CharField(max_length=5,blank=True)
     seat_number = models.CharField(max_length=10)
     status = models.CharField(max_length=20,choices=status_choice,default='active')
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-
-        unique_together = (
-            'section' , 'seat_number'
-        )
 
     def __str__(self):
         return f"{self.section} - {self.seat_number}"
@@ -211,37 +194,3 @@ class Show(models.Model):
 
     def __str__(self):
         return f"{self.movie} - {self.show_date} - {self.start_time}"
-
-class Booking(models.Model):
-
-    status_choice = (
-        ('confirmed' , 'Confirmed'),
-        ('cancelled' , 'Cancelled'),
-        ('pending' , 'Pending'),
-    )
-
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
-    show = models.ForeignKey(Show,on_delete=models.CASCADE)
-    total_amount = models.IntegerField()
-    booking_status = models.CharField(max_length=20,choices=status_choice)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user} - {self.show}"
-
-class BookedSeat(models.Model):
-
-    booking = models.ForeignKey(Booking,on_delete=models.CASCADE)
-    seat = models.ForeignKey(Seat,on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-
-        unique_together = (
-            'booking' , 'seat'
-        )
-
-    def __str__(self):
-        return f"{self.booking} - {self.seat}"
-
-    

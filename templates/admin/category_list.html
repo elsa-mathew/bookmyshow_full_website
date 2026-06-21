@@ -28,7 +28,7 @@
                 <button id="openCategoryModal" class="add-btn">+</button>
 
             </div>
-            <div class="panel-body">
+            <div class="panel-body" id="categoryContainer">
 
                 {% for category in categories %}
 
@@ -98,7 +98,7 @@
 
             <div class="modal-actions">
 
-                <button id="deleteCategory">
+                <button id="deleteCategory" style="display:none;">
                     Delete
                 </button>
 
@@ -120,7 +120,7 @@
 
         <div class="modal-header">
 
-            <h3>Add Subcategory</h3>
+            <h3 id="subcategoryModalTitle">Add Subcategory</h3>
 
             <span id="closeSubcategoryModal">&times;</span>
 
