@@ -177,8 +177,31 @@
     </div>
 
 </div>
+<div id="customAlert" class="alert-overlay">
 
+    <div class="alert-box">
+
+        <div id="alertIcon" class="alert-icon">
+            ✔
+        </div>
+
+        <h2 id="alertTitle">
+            Success
+        </h2>
+
+        <p id="alertMessage">
+            Message
+        </p>
+
+        <button id="alertOk">
+            OK
+        </button>
+
+    </div>
+
+</div>
 {% endblock %}
 {% block js %}
+<script src="{% static 'js/common.js' %}"></script>
 <script src="{% static 'js/category.js' %}"></script>
 {% endblock %}

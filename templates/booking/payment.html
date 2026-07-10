@@ -124,9 +124,7 @@ You need to have a registered UPI ID
 
 <div class="cancel-box">
 
-<h4>
-Cancellation Unavailable
-</h4>
+
 
 <p>
 This venue does not support booking cancellation.
@@ -292,10 +290,33 @@ Amount Payable
     const csrftoken =
         "{{ csrf_token }}";
 </script>
+<script src="{% static 'js/common.js' %}"></script>
 
-<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'js/payment.js' %}"></script>
 
+<div id="customAlert" class="alert-overlay">
 
+    <div class="alert-box">
+
+        <div id="alertIcon" class="alert-icon">
+            ✔
+        </div>
+
+        <h2 id="alertTitle">
+            Success
+        </h2>
+
+        <p id="alertMessage">
+            Message
+        </p>
+
+        <button id="alertOk">
+            OK
+        </button>
+
+    </div>
+
+</div>
 </body>
 
 </html>

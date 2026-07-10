@@ -15,6 +15,7 @@ class Booking(models.Model):
     show = models.ForeignKey(Show,on_delete=models.CASCADE)
     total_amount = models.IntegerField()
     booking_status = models.CharField(max_length=20,choices=status_choice)
+    cancelled_at = models.DateTimeField(null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

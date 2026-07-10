@@ -952,107 +952,81 @@ document
 
         });
 
-        /* =====================
-           CAST
-        ===================== */
 
-        document
-        .querySelectorAll(
-            ".cast-row"
-        )
-        .forEach((row,index) => {
+document
+.querySelectorAll(".cast-row")
+.forEach(row => {
 
-            formData.append(
+    formData.append(
 
-                `cast[${index}][actor_name]`,
+        "cast_name",
 
-                row.querySelector(
-                    ".actor-name"
-                ).value
+        row.querySelector(".actor-name").value
 
-            );
+    );
 
-            formData.append(
+    formData.append(
 
-                `cast[${index}][character_name]`,
+        "character_name",
 
-                row.querySelector(
-                    ".character-name"
-                ).value
+        row.querySelector(".character-name").value
 
-            );
+    );
 
-            const actorImage =
-                row.querySelector(
-                    ".actor-image"
-                ).files[0];
+    const actorImage =
+        row.querySelector(".actor-image").files[0];
 
-            if(actorImage){
+    if(actorImage){
 
-                formData.append(
+        formData.append(
 
-                    `cast[${index}][actor_image]`,
+            "cast_image",
 
-                    actorImage
+            actorImage
 
-                );
+        );
 
-            }
+    }
 
-        });
+});
 
-        /* =====================
-           CREW
-        ===================== */
+  
+document
+.querySelectorAll(".crew-row")
+.forEach(row => {
 
-        document
-        .querySelectorAll(
-            ".crew-row"
-        )
-        .forEach((row,index) => {
+    formData.append(
 
-            formData.append(
+        "crew_name",
 
-                `crew[${index}][name]`,
+        row.querySelector(".crew-name").value
 
-                row.querySelector(
-                    ".crew-name"
-                ).value
+    );
 
-            );
+    formData.append(
 
-            formData.append(
+        "crew_role",
 
-                `crew[${index}][role]`,
+        row.querySelector(".crew-role").value
 
-                row.querySelector(
-                    ".crew-role"
-                ).value
+    );
 
-            );
+    const crewImage =
+        row.querySelector(".crew-image").files[0];
 
-            const crewImage =
-                row.querySelector(
-                    ".crew-image"
-                ).files[0];
+    if(crewImage){
 
-            if(crewImage){
+        formData.append(
 
-                formData.append(
+            "crew_image",
 
-                    `crew[${index}][image]`,
+            crewImage
 
-                    crewImage
+        );
 
-                );
+    }
 
-            }
-
-        });
-
-        try{
-
-           let response;
+});
 
 if(selectedMovieId){
 
@@ -1135,19 +1109,10 @@ if(selectedMovieId){
             }
 
         }
-        catch(error){
+        
+    );  
 
-            console.error(error);
 
-            alert(
-                "Something went wrong"
-            );
-
-        }
-
-    }
-
-);
 
 document.addEventListener(
     "click",
@@ -1292,3 +1257,20 @@ genreCard.onclick = () => {
         : "none";
 
 };
+
+const viewMovieButtons =
+    document.querySelectorAll(".view-movie-btn");
+
+viewMovieButtons.forEach(button => {
+
+    button.onclick = function () {
+
+        const id =
+            this.dataset.id;
+
+        window.location.href =
+            `/api/theatre/movie/${id}/`;
+
+    };
+
+});

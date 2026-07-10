@@ -137,11 +137,11 @@
         data-id="{{ movie.id }}"
     >
 
-        <img
-            src="{{ movie.poster.url }}"
-            alt="{{ movie.movie_name }}"
-        >
-
+        {% if movie.poster %}
+    <img src="{{ movie.poster.url }}" alt="{{ movie.movie_name }}">
+{% else %}
+    <img src="{% static 'images/default_movie.jpg' %}" alt="No Poster">
+{% endif %}
         <h4>
             {{ movie.movie_name }}
         </h4>
@@ -149,7 +149,12 @@
         <div
             class="movie-actions"
         >
-
+        <button
+        class="view-movie-btn"
+        data-id="{{ movie.id }}"
+    >
+        View
+    </button>
          <button
     class="edit-movie-btn"
     data-id="{{ movie.id }}"
@@ -503,7 +508,29 @@
     </div>
 
 </div>
+<div id="customAlert" class="alert-overlay">
 
+    <div class="alert-box">
+
+        <div id="alertIcon" class="alert-icon">
+            ✔
+        </div>
+
+        <h2 id="alertTitle">
+            Success
+        </h2>
+
+        <p id="alertMessage">
+            Message
+        </p>
+
+        <button id="alertOk">
+            OK
+        </button>
+
+    </div>
+
+</div>
 {% endblock %}
 
 {% block js %}

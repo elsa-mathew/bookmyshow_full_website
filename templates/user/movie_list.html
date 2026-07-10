@@ -1,0 +1,186 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Movie Details Page</title>
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    </head>
+    <body>
+<header class="navbar">
+
+    <div class="container nav-top">
+
+        <div class="nav-left">
+            <img src="{% static 'images/logo.png' %}" class="logo">
+
+            <div class="search">
+                <input placeholder="Search for Movies, Events, Plays, Sports and Activities">
+            </div>
+        </div>
+
+        <div class="nav-right">
+
+        </div>
+
+    </div>
+
+        <div class="nav-bottom">
+
+            <div class="container nav-links">
+
+                <div class="left-links">
+
+                    {% for category in categories %}
+                    <span class="category-link" data-id="{{ category.id }}">
+                        {{ category.name }}
+                    </span>
+                    {% endfor %}
+
+                </div>
+
+                <div class="right-links">
+                    <span>ListYourShow</span>
+                    <span>Corporates</span>
+                    <span>Offers</span>
+                    <span>Gift Cards</span>
+                    <a href="/api/user/my-bookings/" class="booking-link">My Bookings</a>
+                </div>
+
+            </div>
+
+        </div>
+
+</header>
+<div class="movie-page">
+
+    <div class="filter-panel">
+
+        <div class="filter-card">
+
+            <div class="filter-header">
+
+                <h3>
+                    Languages
+                </h3>
+
+            </div>
+
+            {% for language in languages %}
+
+            <a
+                href="?language={{ language.id }}"
+                class="filter-chip"
+            >
+
+                {{ language.name }}
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+        <div class="filter-card">
+
+            <div class="filter-header">
+
+                <h3>
+                    Genres
+                </h3>
+
+            </div>
+
+            {% for genre in genres %}
+
+            <a
+                href="?genre={{ genre.id }}"
+                class="filter-chip"
+            >
+
+                {{ genre.name }}
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <div class="movie-content">
+
+        <h2>
+            Movies In Kochi
+        </h2>
+
+        <div class="top-language-bar">
+
+            {% for language in languages %}
+
+            <a
+                href="?language={{ language.id }}"
+                class="language-chip"
+            >
+
+                {{ language.name }}
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+        <div class="movie-grid">
+
+            {% for movie in movies %}
+
+            <div class="movie-card">
+
+                <a
+                    href="/api/user/movie/{{ movie.id }}/"
+                >
+
+                {% if movie.poster %}
+    <img src="{{ movie.poster.url }}" alt="{{ movie.movie_name }}">
+{% else %}
+    <img src="{% static 'images/default_movie.jpg' %}" alt="No Poster">
+{% endif %}
+
+                </a>
+
+                <h4>
+
+                    {{ movie.movie_name }}
+
+                </h4>
+
+                <p>
+
+                    {% for language in movie.languages.all %}
+
+                        {{ language.name }}
+
+                        {% if not forloop.last %}
+                            ,
+                        {% endif %}
+
+                    {% endfor %}
+
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{% static 'js/script.js' %}"></script>
+
+</body>
+</html>
+    </body>
+</html>

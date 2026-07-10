@@ -169,13 +169,19 @@ saveCategoryBtn.addEventListener(
 
         if(!name){
 
-            alert(
-                "Please enter category name"
-            );
+    showAlert(
 
-            return;
+        "Validation",
 
-        }
+        "Please enter category name.",
+
+        "warning"
+
+    );
+
+    return;
+
+}
 
         let url =
             "/api/adminapp/api/categories/add/";
@@ -231,32 +237,46 @@ saveCategoryBtn.addEventListener(
 
         console.log(data);
 
-        if(response.ok){
+       if(response.ok){
 
-            alert(
+    showAlert(
 
-                selectedCategoryId
+        "Success",
 
-                ?
+        selectedCategoryId
 
-                "Category Updated Successfully"
+        ?
 
-                :
+        "Category updated successfully."
 
-                "Category Added Successfully"
+        :
 
-            );
+        "Category added successfully.",
+
+        "success",
+
+        function(){
 
             location.reload();
 
         }
+
+    );
+
+}
         else{
 
-            alert(
-                JSON.stringify(data)
-            );
+    showAlert(
 
-        }
+        "Error",
+
+        data.error || data.message || "Something went wrong.",
+
+        "error"
+
+    );
+
+}
 
     }
 );
@@ -359,21 +379,33 @@ deleteCategoryBtn.addEventListener(
 
         if(response.ok){
 
-            alert(
-                data.message
-            );
+    showAlert(
 
-            location.reload();
+        "Category Deleted",
 
-        }
-        else{
+        data.message,
 
-            alert(
-                data.error ||
-                "Unable to delete category"
-            );
+        "success",
 
-        }
+        () => location.reload()
+
+    );
+
+}
+else{
+
+    showAlert(
+
+        "Deletion Failed",
+
+        data.error || "Unable to delete the category.",
+
+        "error"
+
+    );
+
+}
+        
 
     }
 );

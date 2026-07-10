@@ -15,109 +15,42 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
 from datetime import date
 from datetime import datetime, timedelta
-from rest_framework.decorators import (
-    api_view,
-    authentication_classes
-)
-from django.shortcuts import render
-from django.db.models import Count, Sum
+from rest_framework.decorators import (api_view,authentication_classes)
 from django.utils import timezone
-
-from theatre.models import (
-    Theatre,
-    Screen,
-    Show
-)
-
 from booking.models import Booking
-
+from django.contrib.auth.decorators import login_required
+from authenticate.decorators import theatre_required
+from django.views.decorators.cache import never_cache
+@never_cache
+@login_required(login_url='login')
 @authentication_classes([])
-def dashboard(request):
+def theatre_dashboard(request):
 
-    theatre = Theatre.objects.get(
-        owner=request.user
-    )
-
+    theatre = Theatre.objects.get(owner=request.user)
     today = timezone.now().date()
-
-    screens = Screen.objects.filter(
-        theatre=theatre
-    )
-
+    screens = Screen.objects.filter(theatre=theatre)
     total_screens = screens.count()
-
-    total_shows = Show.objects.filter(
-        screen__theatre=theatre
-    ).count()
-
-    today_bookings = Booking.objects.filter(
-        show__screen__theatre=theatre,
-        created_at__date=today
-    ).count()
-
-    revenue = (
-        Booking.objects.filter(
-            show__screen__theatre=theatre,
-            booking_status='confirmed'
-        ).aggregate(
-            total=Sum('total_amount')
-        )['total']
-        or 0
-    )
-
-    todays_shows = Show.objects.filter(
-        screen__theatre=theatre,
-        show_date=today
-    ).select_related(
-        'movie',
-        'screen'
-    )
-
-    top_movies = (
-        Booking.objects.filter(
-            show__screen__theatre=theatre
-        )
-        .values(
-            'show__movie__movie_name'
-        )
-        .annotate(
-            booking_count=Count('id')
-        )
-        .order_by(
-            '-booking_count'
-        )[:5]
-    )
+    total_shows = Show.objects.filter(screen__theatre=theatre).count()
+    today_bookings = Booking.objects.filter(show__screen__theatre=theatre,created_at__date=today).count()
+    revenue = (Booking.objects.filter(show__screen__theatre=theatre,booking_status='confirmed').aggregate(total=Sum('total_amount')
+        )['total']or 0)
+    todays_shows = Show.objects.filter(screen__theatre=theatre,show_date=today).select_related('movie','screen')
+    top_movies = (Booking.objects.filter(show__screen__theatre=theatre).values('show__movie__movie_name')
+        .annotate(booking_count=Count('id')).order_by('-booking_count')[:5] )
 
     context = {
 
-        'total_screens':
-            total_screens,
-
-        'total_shows':
-            total_shows,
-
-        'today_bookings':
-            today_bookings,
-
-        'revenue':
-            revenue,
-
-        'todays_shows':
-            todays_shows,
-
-        'top_movies':
-            top_movies,
-
-        'screens':
-            screens
+        'total_screens':total_screens,
+        'total_shows':total_shows,
+        'today_bookings':today_bookings,
+        'revenue':revenue,
+        'todays_shows':todays_shows,
+        'top_movies':top_movies,
+        'screens':screens
 
     }
 
-    return render(
-        request,
-        'theatre/theatre_dashboard.html',
-        context
-    )
+    return render(request,'theatre/theatre_dashboard.html',context)
 
 @api_view(['POST'])
 @authentication_classes([])
@@ -156,12 +89,13 @@ def add_theatre(request):
         "message": "Theatre created successfully"
     })
 
+
+
 @api_view(['GET'])
 @authentication_classes([])
 def get_theatres(request):
 
     theatres = Theatre.objects.all()
-
     serializer = TheatreSerializer(
         theatres,
         many=True
@@ -169,12 +103,13 @@ def get_theatres(request):
 
     return Response(serializer.data)
 
+
+
 @api_view(['PUT'])
 @authentication_classes([])
 def update_theatre(request, id):
 
     theatre = Theatre.objects.get(id=id)
-
     theatre.theatre_name = request.data.get('theatre_name')
     theatre.location = request.data.get('location')
     theatre.phone = request.data.get('phone')
@@ -186,12 +121,13 @@ def update_theatre(request, id):
         "message":"Theatre updated"
     })
 
+
+
 @api_view(['DELETE'])
 @authentication_classes([])
 def delete_theatre(request, id):
 
     theatre = Theatre.objects.get(id=id)
-
     theatre.delete()
 
     return Response({
@@ -214,9 +150,7 @@ def add_screen(request):
 
     try:
 
-        theatre = Theatre.objects.get(
-            owner=request.user
-        )
+        theatre = Theatre.objects.get(owner=request.user)
 
     except Theatre.DoesNotExist:
 
@@ -227,38 +161,27 @@ def add_screen(request):
             status=404
         )
 
-    screen_name = request.data.get(
-        'screen_name'
-    )
-
-    total_seats = request.data.get(
-        'total_seats'
-    )
-
-    status = request.data.get(
-        'status'
-    )
-
+    screen_name = request.data.get('screen_name')
+    total_seats = request.data.get('total_seats')
+    status = request.data.get('status')
+    
     screen = Screen.objects.create(
 
         theatre=theatre,
-
         screen_name=screen_name,
-
         total_seats=total_seats,
-
         status=status
 
     )
 
-    serializer = ScreenSerializer(
-        screen
-    )
+    serializer = ScreenSerializer(screen)
 
     return Response(
         serializer.data,
         status=201
     )
+
+
 
 def screen_list(request):
 
@@ -270,16 +193,13 @@ def screen_list(request):
         'theatre/screens.html'
     )
 
+
+
 @api_view(['GET'])
 def get_screens(request):
 
-    theatre = Theatre.objects.get(
-        owner=request.user
-    )
-
-    screens = Screen.objects.filter(
-        theatre=theatre
-    )
+    theatre = Theatre.objects.get(owner=request.user)
+    screens = Screen.objects.filter(theatre=theatre)
 
     serializer = ScreenSerializer(
         screens,
@@ -290,24 +210,15 @@ def get_screens(request):
         serializer.data
     )
 
+
+
 @api_view(['PUT'])
 def update_screen(request, id):
 
-    screen = Screen.objects.get(
-        id=id
-    )
-
-    screen.screen_name = request.data.get(
-        'screen_name'
-    )
-
-    screen.total_seats = request.data.get(
-        'total_seats'
-    )
-
-    screen.status = request.data.get(
-        'status'
-    )
+    screen = Screen.objects.get(id=id)
+    screen.screen_name = request.data.get('screen_name')
+    screen.total_seats = request.data.get('total_seats')
+    screen.status = request.data.get('status')
 
     screen.save()
 
@@ -315,12 +226,12 @@ def update_screen(request, id):
         "message":"Screen Updated"
     })
 
+
+
 @api_view(['DELETE'])
 def delete_screen(request,id):
 
-    screen = Screen.objects.get(
-        id=id
-    )
+    screen = Screen.objects.get(id=id)
 
     screen.delete()
 
@@ -329,57 +240,33 @@ def delete_screen(request,id):
     })
 
 
+
+
 @api_view(['POST'])
 def add_section(request):
 
     print("ADD SECTION API HIT")
 
-    screen_id = request.data.get(
-        'screen_id'
-    )
+    screen_id = request.data.get('screen_id')
 
-    screen = Screen.objects.get(
-        id=screen_id
-    )
+    screen = Screen.objects.get(id=screen_id)
 
     section = Section.objects.create(
-
+        
         screen=screen,
-
-        section_name=request.data.get(
-            'section_name'
-        ),
-
-        price=request.data.get(
-            'price'
-        ),
-
-        start_row=request.data.get(
-            'start_row'
-        ),
-
-        end_row=request.data.get(
-            'end_row'
-        ),
-
-        columns=request.data.get(
-            'columns'
-        ),
-
-        status=request.data.get(
-            'status'
-        )
+        section_name=request.data.get('section_name'),
+        price=request.data.get('price'),
+        start_row=request.data.get('start_row'),
+        end_row=request.data.get('end_row'),
+        columns=request.data.get('columns'),
+        status=request.data.get('status')
 
     )
 
     print("SECTION CREATED:", section.id)
 
-    start = ascii_uppercase.index(
-        section.start_row.upper()
-    )
-
-    end = ascii_uppercase.index(
-        section.end_row.upper()
+    start = ascii_uppercase.index(section.start_row.upper())
+    end = ascii_uppercase.index(section.end_row.upper()
     )
 
     print("START:", start)
@@ -413,12 +300,12 @@ def add_section(request):
         status=201
     )
 
+
+
 @api_view(['GET'])
 def get_sections(request,screen_id):
 
-    sections =Section.objects.filter(
-            screen_id=screen_id
-        )
+    sections =Section.objects.filter(screen_id=screen_id)
 
     serializer =SectionSerializer(
             sections,
@@ -429,36 +316,18 @@ def get_sections(request,screen_id):
         serializer.data
     )
 
+
+
 @api_view(['PUT'])
 def update_section(request,id):
 
-    section = Section.objects.get(
-        id=id
-    )
-
-    section.section_name = request.data.get(
-        'section_name'
-    )
-
-    section.price = request.data.get(
-        'price'
-    )
-
-    section.start_row = request.data.get(
-        'start_row'
-    )
-
-    section.end_row = request.data.get(
-        'end_row'
-    )
-
-    section.columns = request.data.get(
-        'columns'
-    )
-
-    section.status = request.data.get(
-        'status'
-    )
+    section = Section.objects.get(id=id)
+    section.section_name = request.data.get('section_name')
+    section.price = request.data.get('price')
+    section.start_row = request.data.get('start_row')
+    section.end_row = request.data.get('end_row')
+    section.columns = request.data.get('columns')
+    section.status = request.data.get('status')
 
     section.save()
 
@@ -466,11 +335,13 @@ def update_section(request,id):
         "message":"Section Updated"
     })
 
+
+
+
 @api_view(['DELETE'])
 def delete_section(request,id):
 
-    section = Section.objects.get(
-        id=id)
+    section = Section.objects.get(id=id)
 
     section.delete()
 
@@ -478,44 +349,34 @@ def delete_section(request,id):
         "message":"Section Deleted"
     })
 
+
+@theatre_required
+@login_required(login_url='login')
 def movie_list(request):
 
     total_movies = Movie.objects.count()
-
     total_languages = Language.objects.count()
-
     total_genres = Genre.objects.count()
-
     movies = Movie.objects.all()
 
     context = {
 
-        'total_movies':
-            total_movies,
-
-        'total_languages':
-            total_languages,
-
-        'total_genres':
-            total_genres,
-
-        'movies':
-            movies
+        'total_movies':total_movies,
+        'total_languages':total_languages,
+        'total_genres':total_genres,
+        'movies':movies
 
     }
 
-    return render(
-        request,
-        'theatre/movies.html',
-        context
-    )
+    return render(request,'theatre/movie.html',context)
+
+
+
 
 @api_view(['GET'])
 def get_languages(request):
 
-    languages = Language.objects.filter(
-        status='active'
-    )
+    languages = Language.objects.filter(status='active')
 
     data = [
 
@@ -530,6 +391,9 @@ def get_languages(request):
     ]
 
     return Response(data)
+
+
+
 
 @api_view(['GET'])
 def get_genres(request):
@@ -549,18 +413,16 @@ def get_genres(request):
     ]
 
     return Response(data)
+
+
+
 @api_view(['POST'])
 def add_language(request):
 
     language = Language.objects.create(
-
-        name=request.data.get(
-            'name'
-        ),
-
-        status=request.data.get(
-            'status'
-        )
+        
+        name=request.data.get('name'),
+        status=request.data.get('status')
 
     )
 
@@ -568,20 +430,15 @@ def add_language(request):
         "message":"Language Added"
     })
 
+
+
+
 @api_view(['PUT'])
 def update_language(request,id):
 
-    language =Language.objects.get(
-            id=id
-        )
-
-    language.name =request.data.get(
-            'name'
-        )
-
-    language.status =request.data.get(
-            'status'
-        )
+    language =Language.objects.get(id=id)
+    language.name =request.data.get('name')
+    language.status =request.data.get('status')
 
     language.save()
 
@@ -589,12 +446,13 @@ def update_language(request,id):
         "message":"Updated"
     })
 
+
+
+
 @api_view(['DELETE'])
 def delete_language(request,id):
 
-    language =Language.objects.get(
-            id=id
-        )
+    language =Language.objects.get(id=id)
 
     language.delete()
 
@@ -602,18 +460,16 @@ def delete_language(request,id):
         "message":"Deleted"
     })
 
+
+
+
 @api_view(['POST'])
 def add_genre(request):
 
     genre = Genre.objects.create(
 
-        name=request.data.get(
-            'name'
-        ),
-
-        status=request.data.get(
-            'status'
-        )
+        name=request.data.get('name'),
+        status=request.data.get('status')
 
     )
 
@@ -621,20 +477,15 @@ def add_genre(request):
         "message":"Genre Added"
     })
 
+
+
+
 @api_view(['PUT'])
 def update_genre(request,id):
 
-    genre = Genre.objects.get(
-        id=id
-    )
-
-    genre.name = request.data.get(
-        'name'
-    )
-
-    genre.status = request.data.get(
-        'status'
-    )
+    genre = Genre.objects.get(id=id)
+    genre.name = request.data.get('name')
+    genre.status = request.data.get('status')
 
     genre.save()
 
@@ -642,18 +493,22 @@ def update_genre(request,id):
         "message":"Updated"
     })
 
+
+
+
 @api_view(['DELETE'])
 def delete_genre(request,id):
 
-    genre = Genre.objects.get(
-        id=id
-    )
+    genre = Genre.objects.get(id=id)
 
     genre.delete()
 
     return Response({
         "message":"Deleted"
     })
+
+
+
 
 @api_view(['POST'])
 def add_movie(request):
@@ -662,83 +517,29 @@ def add_movie(request):
 
         movie = Movie.objects.create(
 
-            movie_name =
-                request.data.get(
-                    'movie_name'
-                ),
-
-            duration =
-                request.data.get(
-                    'duration'
-                ),
-
-            certificate =
-                request.data.get(
-                    'certificate'
-                ),
-
-            release_date =
-                request.data.get(
-                    'release_date'
-                ),
-
-            trailer =
-                request.data.get(
-                    'trailer'
-                ),
-
-            description =
-                request.data.get(
-                    'description'
-                ),
-
-            status =
-                request.data.get(
-                    'status'
-                ),
-
-            poster =
-                request.FILES.get(
-                    'poster'
-                )
+            movie_name = request.data.get('movie_name'),
+            duration = request.data.get('duration'),
+            certificate = request.data.get('certificate'),
+            release_date = request.data.get('release_date'),
+            trailer = request.data.get('trailer'),
+            description = request.data.get('description'),
+            status = request.data.get('status'),
+            poster = request.FILES.get('poster')
 
         )
 
   
 
-        language_ids = request.data.getlist(
-            'languages'
-        )
-
-        movie.languages.set(
-
-            Language.objects.filter(
-                id__in=language_ids
-            )
-
-        )
-
-  
-
-        genre_ids = request.data.getlist(
-            'genres'
-        )
-
-        movie.genres.set(
-
-            Genre.objects.filter(
-                id__in=genre_ids
-            )
-
-        )
+        language_ids = request.data.getlist('languages')
+        movie.languages.set(Language.objects.filter(id__in=language_ids))
+        genre_ids = request.data.getlist('genres')
+        movie.genres.set(Genre.objects.filter( id__in=genre_ids))
 
         index = 0
 
         while True:
 
-            actor_name = request.data.get(
-                f'cast[{index}][actor_name]'
-            )
+            actor_name = request.data.get(f'cast[{index}][actor_name]')
 
             if not actor_name:
                 break
@@ -746,16 +547,9 @@ def add_movie(request):
             Cast.objects.create(
 
                 movie=movie,
-
                 actor_name=actor_name,
-
-                character_name=request.data.get(
-                    f'cast[{index}][character_name]'
-                ),
-
-                actor_image=request.FILES.get(
-                    f'cast[{index}][actor_image]'
-                )
+                character_name=request.data.get(f'cast[{index}][character_name]'),
+                actor_image=request.FILES.get(f'cast[{index}][actor_image]')
 
             )
 
@@ -765,9 +559,7 @@ def add_movie(request):
 
         while True:
 
-            name = request.data.get(
-                f'crew[{index}][name]'
-            )
+            name = request.data.get(f'crew[{index}][name]')
 
             if not name:
                 break
@@ -775,16 +567,9 @@ def add_movie(request):
             Crew.objects.create(
 
                 movie=movie,
-
                 name=name,
-
-                role=request.data.get(
-                    f'crew[{index}][role]'
-                ),
-
-                image=request.FILES.get(
-                    f'crew[{index}][image]'
-                )
+                role=request.data.get(f'crew[{index}][role]'),
+                image=request.FILES.get(f'crew[{index}][image]')
 
             )
 
@@ -806,51 +591,33 @@ def add_movie(request):
         }, status=400)
 
 
+
+@theatre_required
+@login_required(login_url='login')
 def show_list(request):
 
     total_movies = Movie.objects.count()
-
-    today_shows = Show.objects.filter(
-        show_date=date.today()
-    ).count()
-
-    active_screens = Screen.objects.filter(
-        status='active'
-    ).count()
-
-    upcoming_shows = Show.objects.filter(
-        show_date__gt=date.today()
-    ).count()
+    today_shows = Show.objects.filter(show_date=date.today()).count()
+    active_screens = Screen.objects.filter(status='active').count()
+    upcoming_shows = Show.objects.filter(show_date__gt=date.today()).count()
 
     context = {
 
-        'total_movies':
-            total_movies,
-
-        'today_shows':
-            today_shows,
-
-        'active_screens':
-            active_screens,
-
-        'upcoming_shows':
-            upcoming_shows
+        'total_movies':total_movies,
+        'today_shows':today_shows,
+        'active_screens':active_screens,
+        'upcoming_shows':upcoming_shows
 
     }
 
-    return render(
-        request,
-        'theatre/shows.html',
-        context
-    )
+    return render(request,'theatre/shows.html',context)
+
+
 
 @api_view(['GET'])
 def get_movies(request):
 
-    movies = Movie.objects.filter(
-        status='active'
-    )
-
+    movies = Movie.objects.filter(status='active')
     data = [
 
         {
@@ -864,26 +631,22 @@ def get_movies(request):
 
     return Response(data)
 
+
+
+
 @api_view(['GET'])
 def get_screens(request):
 
-    theatre = Theatre.objects.get(
-        owner=request.user
-    )
-
-    screens = Screen.objects.filter(
-        theatre=theatre,
-        status='active'
-    )
-
-    serializer = ScreenSerializer(
-        screens,
-        many=True
-    )
+    theatre = Theatre.objects.get(owner=request.user)
+    screens = Screen.objects.filter(theatre=theatre,status='active')
+   
+    serializer = ScreenSerializer(screens, many=True)
 
     return Response(
         serializer.data
     )
+
+
 
 
 @api_view(['POST'])
@@ -891,82 +654,41 @@ def add_show(request):
 
     try:
 
-        movie_id = request.data.get(
-            'movie_id'
-        )
-
-        screen_id = request.data.get(
-            'screen_id'
-        )
-
-        show_date = request.data.get(
-            'show_date'
-        )
-
-        status = request.data.get(
-            'status'
-        )
-
-        show_times = request.data.get(
-            'show_times'
-        )
-
-        movie = Movie.objects.get(
-            id=movie_id
-        )
-
-        screen = Screen.objects.get(
-            id=screen_id
-        )
+        movie_id = request.data.get('movie_id')
+        screen_id = request.data.get('screen_id')
+        show_date = request.data.get('show_date')
+        status = request.data.get('status')
+        show_times = request.data.get('show_times')
+       
+        movie = Movie.objects.get(id=movie_id)
+        screen = Screen.objects.get(id=screen_id)
 
         duration = movie.duration
-
         hours = 0
         minutes = 0
 
         if 'hr' in duration:
 
-            hours = int(
-                duration.split('hr')[0].strip()
-            )
+            hours = int(duration.split('hr')[0].strip())
 
         if 'min' in duration:
 
-            minutes = int(
-                duration.split('hr')[1]
-                .replace('min', '')
-                .strip()
-            )
+            minutes = int(duration.split('hr')[1].replace('min', '').strip())
 
-        duration_delta = timedelta(
-            hours=hours,
-            minutes=minutes
-        )
+        duration_delta = timedelta(hours=hours, minutes=minutes)
 
         for start_time_str in show_times:
 
-            start_datetime = datetime.strptime(
-                start_time_str,
-                "%H:%M"
-            )
-
-            end_datetime = (
-                start_datetime +
-                duration_delta
-            )
+            start_datetime = datetime.strptime(start_time_str,"%H:%M")
+            end_datetime = (start_datetime +duration_delta)
 
             Show.objects.create(
 
                 movie=movie,
-
                 screen=screen,
-
                 show_date=show_date,
-
                 start_time=start_datetime.time(),
-
                 end_time=end_datetime.time(),
-
                 status=status
 
             )
@@ -986,154 +708,51 @@ def add_show(request):
 
         }, status=400)
     
-def logout_view(request):
 
-    logout(request)
-
-    return redirect('login')
-
-
+@theatre_required
+@login_required(login_url='login')  
 def booking_dashboard(request):
 
-    theatre = Theatre.objects.get(
-        owner=request.user
-    )
-
+    theatre = Theatre.objects.get(owner=request.user)
     today = timezone.now().date()
-
-    bookings = Booking.objects.filter(
-        show__screen__theatre=theatre
-    )
-
+    bookings = Booking.objects.filter(show__screen__theatre=theatre)
     total_bookings = bookings.count()
-
-    todays_bookings = bookings.filter(
-        created_at__date=today
-    ).count()
-
-    confirmed_bookings = bookings.filter(
-        booking_status='confirmed'
-    ).count()
-
-    todays_revenue = (
-
-        bookings
-
-        .filter(
+    todays_bookings = bookings.filter(created_at__date=today).count()
+    confirmed_bookings = bookings.filter(booking_status='confirmed').count()
+    todays_revenue = (bookings.filter(
             created_at__date=today,
             booking_status='confirmed'
-        )
+        ).aggregate(total=Sum('total_amount'))['total']or 0)
 
-        .aggregate(
-            total=Sum('total_amount')
-        )['total']
-
-        or 0
-
-    )
-
-    total_revenue = (
-
-        bookings
-
-        .filter(
-            booking_status='confirmed'
-        )
-
-        .aggregate(
-            total=Sum('total_amount')
-        )['total']
-
-        or 0
-
-    )
-
-    movie_stats = (
-
-        bookings
-
-        .values(
-            'show__movie__movie_name'
-        )
-
-        .annotate(
+    total_revenue = (bookings.filter(booking_status='confirmed').aggregate(total=Sum('total_amount'))['total']or 0)
+    movie_stats = (bookings.values('show__movie__movie_name').annotate(
             total_bookings=Count('id'),
             revenue=Sum('total_amount')
-        )
+        ).order_by('-total_bookings')[:10])
 
-        .order_by(
-            '-total_bookings'
-        )[:10]
-
-    )
-
-    top_users = (
-
-        bookings
-
-        .values(
-            'user__username'
-        )
-
-        .annotate(
-            total_bookings=Count('id')
-        )
-
-        .order_by(
-            '-total_bookings'
-        )[:10]
-
-    )
-
-    recent_bookings = (
-
-        bookings
-
-        .select_related(
+    top_users = (bookings.values('user__username').annotate(total_bookings=Count('id')).order_by('-total_bookings')[:10])
+    recent_bookings = (bookings.select_related(
             'user',
             'show',
             'show__movie'
-        )
-
-        .order_by(
-            '-created_at'
-        )[:20]
-
-    )
+        ).order_by('-created_at')[:20])
 
     context = {
 
-        'total_bookings':
-            total_bookings,
-
-        'todays_bookings':
-            todays_bookings,
-
-        'confirmed_bookings':
-            confirmed_bookings,
-
-        'todays_revenue':
-            todays_revenue,
-
-        'total_revenue':
-            total_revenue,
-
-        'movie_stats':
-            movie_stats,
-
-        'top_users':
-            top_users,
-
-        'recent_bookings':
-            recent_bookings
+        'total_bookings':total_bookings,
+        'todays_bookings':todays_bookings,
+        'confirmed_bookings':confirmed_bookings,
+        'todays_revenue':todays_revenue,
+        'total_revenue':total_revenue,
+        'movie_stats':movie_stats,
+        'top_users':top_users,
+        'recent_bookings':recent_bookings
 
     }
 
-    return render(
-        request,
-        'theatre/booking_dashboard.html',
-        context
-    )
+    return render(request,'theatre/booking_dashboard.html',context)
+
+
 
 
 @api_view(['GET'])
@@ -1155,58 +774,383 @@ def language_movie_count(request):
     return Response(data)
 
 
+
+
 @api_view(['DELETE'])
 @authentication_classes([])
 def delete_movie(request,id):
 
-    movie = Movie.objects.get(
-        id=id
-    )
+    movie = Movie.objects.get(id=id)
 
     movie.delete()
 
     return Response({
         "message":"Movie Deleted"
     })
+
+
+
+
 @api_view(['PUT'])
 @authentication_classes([])
 def update_movie(request, id):
 
-    movie = Movie.objects.get(
-        id=id
-    )
+    movie = Movie.objects.get(id=id)
+    movie.movie_name = request.data.get('movie_name')
+    movie.duration = request.data.get('duration')
+    movie.certificate = request.data.get('certificate')
+    movie.release_date = request.data.get('release_date')
+    movie.trailer = request.data.get('trailer')
+    movie.description = request.data.get('description')
+    movie.status = request.data.get('status')
+    
+    if 'poster' in request.FILES:
 
-    movie.movie_name = request.data.get(
-        'movie_name'
-    )
-
-    movie.duration = request.data.get(
-        'duration'
-    )
-
-    movie.certificate = request.data.get(
-        'certificate'
-    )
-
-    movie.release_date = request.data.get(
-        'release_date'
-    )
-
-    movie.trailer = request.data.get(
-        'trailer'
-    )
-
-    movie.description = request.data.get(
-        'description'
-    )
-
-    movie.status = request.data.get(
-        'status'
-    )
+        movie.poster = request.FILES['poster']
 
     movie.save()
 
+    cast_names = request.data.getlist("cast_name")
+    character_names = request.data.getlist("character_name")
+    cast_images = request.FILES.getlist("cast_image")
+
+    for i in range(len(cast_names)):
+
+        if cast_names[i]:
+
+            Cast.objects.create(
+
+                movie=movie,
+
+                actor_name=cast_names[i],
+
+                character_name=character_names[i],
+
+                actor_image=cast_images[i] if i < len(cast_images) else None
+
+            )
+
+
+    crew_names = request.data.getlist("crew_name")
+    crew_roles = request.data.getlist("crew_role")
+    crew_images = request.FILES.getlist("crew_image")
+
+    for i in range(len(crew_names)):
+
+        if crew_names[i]:
+
+            Crew.objects.create(
+
+                movie=movie,
+
+                name=crew_names[i],
+
+                role=crew_roles[i],
+
+                image=crew_images[i] if i < len(crew_images) else None
+
+            )
+    movie.languages.clear()
+    language_ids = request.data.getlist(
+        'languages'
+    )
+
+    movie.languages.set(
+        language_ids
+    )
+
+    movie.genres.clear()
+
+    genre_ids = request.data.getlist(
+        'genres'
+    )
+
+    movie.genres.set(
+        genre_ids
+    )
     return Response({
         "message":
             "Movie Updated"
+    })
+
+
+
+def logout_view(request):
+
+    logout(request)
+
+    return redirect('login')
+
+
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Sum
+from django.utils import timezone
+from datetime import datetime
+
+from theatre.models import Movie, Show
+from booking.models import Booking
+
+
+def movie_details(request, id):
+
+    # ==========================
+    # Movie Details
+    # ==========================
+
+    movie = get_object_or_404(
+        Movie.objects.prefetch_related(
+            "languages",
+            "genres",
+            "cast_set",
+            "crew_set"
+        ),
+        id=id
+    )
+
+    # ==========================
+    # Shows of this movie
+    # ==========================
+
+    shows = Show.objects.filter(
+        movie=movie
+    ).select_related(
+        "screen",
+        "screen__theatre"
+    ).order_by(
+        "show_date",
+        "start_time"
+    )
+
+    now = timezone.now()
+
+    upcoming_shows = 0
+    running_shows = 0
+    completed_shows = 0
+
+    total_bookings = 0
+    total_revenue = 0
+
+    for show in shows:
+
+        start_datetime = timezone.make_aware(
+
+            datetime.combine(
+
+                show.show_date,
+
+                show.start_time
+
+            )
+
+        )
+
+        end_datetime = timezone.make_aware(
+
+            datetime.combine(
+
+                show.show_date,
+
+                show.end_time
+
+            )
+
+        )
+
+        # -------------------------
+        # Current Status
+        # -------------------------
+
+        if now < start_datetime:
+
+            show.current_status = "Upcoming"
+
+            upcoming_shows += 1
+
+        elif start_datetime <= now <= end_datetime:
+
+            show.current_status = "Running"
+
+            running_shows += 1
+
+        else:
+
+            show.current_status = "Completed"
+
+            completed_shows += 1
+
+        # -------------------------
+        # Bookings
+        # -------------------------
+
+        show.total_bookings = Booking.objects.filter(
+
+            show=show,
+
+            booking_status="confirmed"
+
+        ).count()
+
+        total_bookings += show.total_bookings
+
+        # -------------------------
+        # Revenue
+        # -------------------------
+
+        show.revenue = Booking.objects.filter(
+
+            show=show,
+
+            booking_status="confirmed"
+
+        ).aggregate(
+
+            total=Sum("total_amount")
+
+        )["total"] or 0
+
+        total_revenue += show.revenue
+
+    # ==========================
+    # Context
+    # ==========================
+
+    context = {
+
+        "movie": movie,
+
+        "casts": movie.cast_set.all(),
+
+        "crews": movie.crew_set.all(),
+
+        "shows": shows,
+
+        "total_shows": shows.count(),
+
+        "upcoming_shows": upcoming_shows,
+
+        "running_shows": running_shows,
+
+        "completed_shows": completed_shows,
+
+        "total_bookings": total_bookings,
+
+        "total_revenue": total_revenue,
+
+    }
+
+    return render(
+
+        request,
+
+        "theatre/movie_details.html",
+
+        context
+
+    )
+
+from django.shortcuts import render, get_object_or_404
+from booking.models import Booking, BookedSeat
+from theatre.models import Show
+
+def show_details(request, id):
+
+    show = get_object_or_404(
+
+        Show.objects.select_related(
+
+            "movie",
+
+            "screen",
+
+            "screen__theatre"
+
+        ),
+
+        id=id
+
+    )
+
+    bookings = Booking.objects.filter(
+
+        show=show,
+
+        booking_status="confirmed"
+
+    ).order_by("-created_at")
+
+    booked_seats = BookedSeat.objects.filter(
+
+        show=show,
+
+        booking__booking_status="confirmed"
+
+    ).select_related("seat")
+
+    total_bookings = bookings.count()
+
+    total_seats = show.screen.total_seats
+
+    booked_count = booked_seats.count()
+
+    available = total_seats - booked_count
+
+    revenue = sum(
+
+        booking.total_amount
+
+        for booking in bookings
+
+    )
+
+    context = {
+
+        "show": show,
+
+        "bookings": bookings,
+
+        "booked_seats": booked_seats,
+
+        "total_bookings": total_bookings,
+
+        "booked_count": booked_count,
+
+        "available": available,
+
+        "revenue": revenue,
+
+    }
+
+    return render(
+
+        request,
+
+        "theatre/show_details.html",
+
+        context
+
+    )
+
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view(["POST"])
+def stop_show(request, id):
+
+    show = get_object_or_404(
+
+        Show,
+
+        id=id
+
+    )
+
+    show.status = "inactive"
+
+    show.save()
+
+    return Response({
+
+        "message": "Show stopped successfully."
+
     })

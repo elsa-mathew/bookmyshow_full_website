@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.dashboard,name='dashboard'),
+    path('', views.theatre_dashboard,name='theatre_dashboard'),
     path('api/theatres/add/',views.add_theatre,name='add_theatre'),
     path('api/theatres/',views.get_theatres,name='get_theatres'),
     path('api/theatres/update/<int:id>/',views.update_theatre,name='update_theatre'),
@@ -13,107 +13,43 @@ urlpatterns = [
     path('api/screens/update/<int:id>/',views.update_screen,name='update_screen'),
     path('api/screens/delete/<int:id>/',views.delete_screen,name='delete_screen'),
     path('api/sections/add/',views.add_section,name='add_section'),
-    path(
-    'api/sections/<int:screen_id>/',
-    views.get_sections,
-    name='get_sections'
-),
-    path(
-    'api/sections/update/<int:id>/',
-    views.update_section,
-    name='update_section'
-),
-    path(
-    'api/sections/delete/<int:id>/',
-    views.delete_section,
-    name='delete_section'
-),
-path('movies/',views.movie_list,name='movie_list'),
-path(
-        'api/languages/',
-        views.get_languages,
-        name='get_languages'
-    ),
-
-   path(
-        'api/genres/',
-        views.get_genres,
-        name='get_genres'
-    ),
-    path(
-    'api/languages/add/',
-    views.add_language,
-    name='add_language'
-),
-
-    path(
-    'api/languages/update/<int:id>/',
-    views.update_language
-),
-
-    path(
-    'api/languages/delete/<int:id>/',
-    views.delete_language
-),
-
-    path(
-    'api/genres/',
-    views.get_genres
-),
-
-path(
-    'api/genres/add/',
-    views.add_genre
-),
-
-path(
-    'api/genres/update/<int:id>/',
-    views.update_genre
-),
-
-path(
-    'api/genres/delete/<int:id>/',
-    views.delete_genre
-),
-    path(
-    'api/movies/add/',
-    views.add_movie
-),
+    path('api/sections/<int:screen_id>/',views.get_sections,name='get_sections'),
+    path('api/sections/update/<int:id>/',views.update_section,name='update_section'),
+    path('api/sections/delete/<int:id>/',views.delete_section,name='delete_section'),
+    path('movie/',views.movie_list,name='movie_list'),
+    path('api/languages/',views.get_languages,name='get_languages'),
+    path('api/genres/',views.get_genres,name='get_genres'),
+    path('api/languages/add/',views.add_language,name='add_language'),
+    path('api/languages/update/<int:id>/',views.update_language),
+    path('api/languages/delete/<int:id>/',views.delete_language),
+    path('api/genres/',views.get_genres),
+    path('api/genres/add/',views.add_genre),
+    path('api/genres/update/<int:id>/',views.update_genre),
+    path('api/genres/delete/<int:id>/',views.delete_genre),
+    path('api/movies/add/',views.add_movie),
     path('shows/',views.show_list,name='show_list'),
-    path(
-    'api/movies/',
-    views.get_movies,
-    name='get_movies'
-),
-    path(
-    'api/screens/',
-    views.get_screens,
-    name='get_screens'
-),
-    path(
-    'api/shows/add/',
-    views.add_show,
-    name='add_show'
-),
-
+    path('api/movies/',views.get_movies,name='get_movies'),
+    path('api/screens/',views.get_screens,name='get_screens'),
+    path('api/shows/add/',views.add_show,name='add_show'),
     path('logout/',views.logout_view,name='logout'),
-
+    path('booking_dashboard/',views.booking_dashboard,name='booking_dashboard'),
+    path('api/language-movie-count/',views.language_movie_count,name='language_movie_count'),
+    path('api/movies/delete/<int:id>/',views.delete_movie,name='delete_movie'),
+    path('api/movies/update/<int:id>/',views.update_movie,name='update_movie'),
     path(
-    'booking_dashboard/',
-    views.booking_dashboard,
-    name='booking_dashboard'
+    "movie/<int:id>/",
+    views.movie_details,
+    name="movie_details"
 ),
 
 path(
-    'api/language-movie-count/',
-    views.language_movie_count,
-    name='language_movie_count'
+    "show/<int:id>/",
+    views.show_details,
+    name="show_details"
 ),
 path(
-    'api/movies/delete/<int:id>/',
-    views.delete_movie,
-    name='delete_movie'
+    "show/stop/<int:id>/",
+    views.stop_show,
+    name="stop_show"
 ),
-
-path('api/movies/update/<int:id>/',views.update_movie,name='update_movie'),
 ]

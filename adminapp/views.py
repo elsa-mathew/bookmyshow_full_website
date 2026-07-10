@@ -11,9 +11,9 @@ from booking.models import Booking
 from django.db.models import Sum
 from django.db.models import (Count,Sum)
 from django.utils import timezone
+from authenticate.decorators import admin_required
 
-
-
+@admin_required
 def dashboard(request):
 
     total_users = User.objects.filter(is_superuser=False).count()
@@ -34,33 +34,31 @@ def dashboard(request):
     }
     return render(request,'admin/admin_dashboard.html', context)
 
+
+
 def category_list(request):
 
     categories = Category.objects.all()
-
     context = {'categories': categories}
 
     return render(request,'admin/category_list.html',context)
+
+
 
 @api_view(['GET'])
 def get_categories(request):
 
     categories = Category.objects.all()
-
-    serializer = CategorySerializer(
-        categories,
-        many=True
-    )
-
+    serializer = CategorySerializer(categories,many=True)
     return Response(serializer.data)
+
+
 
 @api_view(['POST'])
 def add_category(request):
 
     serializer = CategorySerializer(data=request.data)
-
     if serializer.is_valid():
-
         serializer.save()
 
         return Response(
@@ -73,23 +71,21 @@ def add_category(request):
         status=status.HTTP_400_BAD_REQUEST
     )
 
+
+
 @api_view(['PUT'])
 def update_category(request, id):
 
     category = Category.objects.get(id=id)
-
-    serializer = CategorySerializer(
-        category,
-        data=request.data
-    )
+    serializer = CategorySerializer(category,data=request.data)
 
     if serializer.is_valid():
-
         serializer.save()
-
         return Response(serializer.data)
 
     return Response(serializer.errors)
+
+
 
 @api_view(['DELETE'])
 def delete_category(request, id):
@@ -98,9 +94,7 @@ def delete_category(request, id):
 
         category = Category.objects.get(id=id)
 
-        if Subcatagories.objects.filter(
-            category=category
-        ).exists():
+        if Subcatagories.objects.filter(category=category).exists():
 
             return Response(
                 {
@@ -130,6 +124,8 @@ def delete_category(request, id):
             status=status.HTTP_404_NOT_FOUND
         )
     
+
+
 @api_view(['GET'])
 def get_subcategories(request, category_id):
 
@@ -144,19 +140,18 @@ def get_subcategories(request, category_id):
 
     return Response(serializer.data)
 
+
+
 @api_view(['POST'])
 def add_subcategory(request):
 
     print("REQUEST DATA:", request.data)
-
     serializer = SubcatagoriesSerializer(
         data=request.data
     )
 
     if serializer.is_valid():
-
         serializer.save()
-
         return Response(
             serializer.data,
             status=201
@@ -169,22 +164,21 @@ def add_subcategory(request):
         status=400
     )
 
+
+
 @api_view(['PUT'])
 def update_subcategory(request, id):
 
     try:
 
         subcategory = Subcatagories.objects.get(id=id)
-
         serializer = SubcatagoriesSerializer(
             subcategory,
             data=request.data
         )
 
         if serializer.is_valid():
-
             serializer.save()
-
             return Response(serializer.data)
 
         return Response(
@@ -199,9 +193,13 @@ def update_subcategory(request, id):
             status=404
         )
 
+
+@admin_required
 def theatre_list(request):
     
     return render(request,'admin/theatre_list.html')
+
+
 
 def logout_view(request):
 
@@ -209,17 +207,15 @@ def logout_view(request):
 
     return redirect('login')
 
+
+
 @api_view(['DELETE'])
 def delete_subcategory(request, id):
 
     try:
 
-        subcategory = Subcatagories.objects.get(
-            id=id
-        )
-
+        subcategory = Subcatagories.objects.get(id=id)
         subcategory.delete()
-
         return Response(
             {
                 "message":
@@ -238,153 +234,53 @@ def delete_subcategory(request, id):
         )
 
 
+
+@admin_required
 def booking_dashboard(request):
 
     today = timezone.now().date()
-
-    total_bookings = (
-        Booking.objects.count()
+    total_bookings = (Booking.objects.count()
     )
-
-    todays_bookings = (
-        Booking.objects.filter(
-            created_at__date=today
-        ).count()
+    todays_bookings = (Booking.objects.filter(created_at__date=today).count()
     )
-
-    confirmed_bookings = (
-        Booking.objects.filter(
-            booking_status='confirmed'
-        ).count()
+    confirmed_bookings = (Booking.objects.filter(booking_status='confirmed').count()
     )
-
-    todays_revenue = (
-        Booking.objects.filter(
-            created_at__date=today,
-            booking_status='confirmed'
-        )
-        .aggregate(
-            total=Sum('total_amount')
-        )['total']
-        or 0
+    todays_revenue = (Booking.objects.filter(created_at__date=today,booking_status='confirmed').aggregate(total=Sum('total_amount')
+        )['total']or 0
     )
-
-    total_revenue = (
-        Booking.objects.filter(
-            booking_status='confirmed'
-        )
-        .aggregate(
-            total=Sum('total_amount')
-        )['total']
-        or 0
+    total_revenue = (Booking.objects.filter(booking_status='confirmed').aggregate(total=Sum('total_amount'))['total']or 0
     )
-
-    movie_stats = (
-
-        Booking.objects
-
-        .values(
-            'show__movie__movie_name'
-        )
-
-        .annotate(
-            total_bookings=Count('id')
-        )
-
-        .order_by(
-            '-total_bookings'
-        )[:10]
-
+    movie_stats = (Booking.objects.values('show__movie__movie_name').annotate(total_bookings=Count('id')).order_by('-total_bookings')[:10]
     )
-
-    theatre_stats = (
-
-        Booking.objects
-
-        .values(
-            'show__screen__theatre__theatre_name'
-        )
-
-        .annotate(
-            total_bookings=Count('id'),
-            revenue=Sum('total_amount')
-        )
-
-        .order_by(
-            '-total_bookings'
-        )
-
+    theatre_stats = (Booking.objects.values('show__screen__theatre__theatre_name').annotate(total_bookings=Count('id'),revenue=Sum('total_amount')
+        ).order_by('-total_bookings')
     )
-
-    top_users = (
-
-        Booking.objects
-
-        .values(
-            'user__username'
-        )
-
-        .annotate(
-            total_bookings=Count('id')
-        )
-
-        .order_by(
-            '-total_bookings'
-        )[:10]
-
-    )
+    top_users = (Booking.objects.values('user__username').annotate(total_bookings=Count('id')).order_by('-total_bookings')[:10])
 
     recent_bookings = (
 
-        Booking.objects
-
-        .select_related(
+        Booking.objects.select_related(
             'user',
             'show',
             'show__movie',
             'show__screen',
             'show__screen__theatre'
         )
-
-        .order_by(
-            '-created_at'
-        )[:20]
-
+        .order_by('-created_at')[:20]
     )
 
     context = {
 
-        'total_bookings':
-            total_bookings,
-
-        'todays_bookings':
-            todays_bookings,
-
-        'confirmed_bookings':
-            confirmed_bookings,
-
-        'todays_revenue':
-            todays_revenue,
-
-        'total_revenue':
-            total_revenue,
-
-        'movie_stats':
-            movie_stats,
-
-        'theatre_stats':
-            theatre_stats,
-
-        'top_users':
-            top_users,
-
-        'recent_bookings':
-            recent_bookings
+        'total_bookings':total_bookings,
+        'todays_bookings':todays_bookings,
+        'confirmed_bookings':confirmed_bookings,
+        'todays_revenue':todays_revenue,
+        'total_revenue':total_revenue,
+        'movie_stats':movie_stats,
+        'theatre_stats':theatre_stats,
+        'top_users':top_users,
+        'recent_bookings':recent_bookings
 
     }
 
-    return render(
-        request,
-        'admin/bookings.html',
-        context
-    )
+    return render(request,'admin/bookings.html',context)

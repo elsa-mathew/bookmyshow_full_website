@@ -17,8 +17,6 @@
 
 <body>
 
-<h1>Sections Count: {{ sections|length }}</h1>
-
 <div class="seat-header">
 
 <div class="seat-header-left">
@@ -194,8 +192,31 @@ Pay ₹0
    const CSRF_TOKEN =
     "{{ csrf_token }}";
 </script>
-<script src="{% static 'js/script.js' %}"></script>
 
+<script src="{% static 'js/seat_layout.js' %}"></script>
+<div id="customAlert" class="alert-overlay">
+
+    <div class="alert-box">
+
+        <div id="alertIcon" class="alert-icon">
+            ✔
+        </div>
+
+        <h2 id="alertTitle">
+            Success
+        </h2>
+
+        <p id="alertMessage">
+            Message
+        </p>
+
+        <button id="alertOk">
+            OK
+        </button>
+
+    </div>
+
+</div>
 </body>
 
 </html>

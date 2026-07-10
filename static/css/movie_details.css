@@ -1,0 +1,364 @@
+/* ===========================
+   GLOBAL
+=========================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+
+body{
+    background:#f5f6fa;
+    color:#333;
+}
+
+.container{
+    width:90%;
+    max-width:1400px;
+    margin:40px auto;
+}
+
+/* ===========================
+   BACK BUTTON
+=========================== */
+
+.back-btn{
+    display:inline-block;
+    margin-bottom:25px;
+    text-decoration:none;
+    color:#dc3558;
+    font-weight:600;
+    font-size:16px;
+    transition:.3s;
+}
+
+.back-btn:hover{
+    color:#b91d42;
+}
+
+/* ===========================
+   HEADER
+=========================== */
+
+.movie-header{
+    display:flex;
+    gap:40px;
+    background:#fff;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    margin-bottom:30px;
+}
+
+.poster img{
+    width:260px;
+    height:380px;
+    object-fit:cover;
+    border-radius:12px;
+}
+
+.movie-info{
+    flex:1;
+}
+
+.movie-info h1{
+    font-size:38px;
+    margin-bottom:20px;
+    color:#222;
+}
+
+.movie-info p{
+    margin-bottom:12px;
+    font-size:17px;
+    line-height:1.6;
+}
+
+.movie-info b{
+    color:#dc3558;
+}
+
+.movie-info a{
+    color:#007bff;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.movie-info a:hover{
+    text-decoration:underline;
+}
+
+/* ===========================
+   CARD
+=========================== */
+
+.card{
+    background:#fff;
+    border-radius:16px;
+    padding:25px;
+    margin-bottom:30px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.card h2{
+    margin-bottom:20px;
+    color:#dc3558;
+    border-left:5px solid #dc3558;
+    padding-left:12px;
+}
+
+/* ===========================
+   DESCRIPTION
+=========================== */
+
+.card p{
+    line-height:1.8;
+    font-size:16px;
+}
+
+/* ===========================
+   STATISTICS
+=========================== */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:20px;
+}
+
+.stats div{
+    background:#fafafa;
+    border-radius:12px;
+    padding:20px;
+    text-align:center;
+    transition:.3s;
+    border:1px solid #eee;
+}
+
+.stats div:hover{
+    transform:translateY(-4px);
+    box-shadow:0 8px 18px rgba(0,0,0,.08);
+}
+
+.stats h3{
+    font-size:30px;
+    color:#dc3558;
+    margin-bottom:8px;
+}
+
+.stats p{
+    color:#666;
+    font-size:15px;
+}
+
+/* ===========================
+   CAST & CREW
+=========================== */
+
+.people-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:25px;
+}
+
+.person-card{
+    background:#fafafa;
+    border-radius:14px;
+    overflow:hidden;
+    text-align:center;
+    padding-bottom:15px;
+    transition:.3s;
+    border:1px solid #eee;
+}
+
+.person-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 8px 18px rgba(0,0,0,.08);
+}
+
+.person-card img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+.person-card h4{
+    margin-top:15px;
+    font-size:18px;
+    color:#222;
+}
+
+.person-card p{
+    color:#777;
+    font-size:15px;
+    margin-top:8px;
+}
+
+/* ===========================
+   TABLE
+=========================== */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead{
+    background:#dc3558;
+    color:white;
+}
+
+thead th{
+    padding:15px;
+    text-align:left;
+}
+
+tbody tr{
+    border-bottom:1px solid #eee;
+    transition:.3s;
+}
+
+tbody tr:hover{
+    background:#fafafa;
+}
+
+tbody td{
+    padding:16px;
+    font-size:15px;
+}
+
+/* ===========================
+   STATUS BADGES
+=========================== */
+
+.status{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:20px;
+    color:white;
+    font-size:13px;
+    font-weight:600;
+}
+
+.upcoming{
+    background:#17a2b8;
+}
+
+.running{
+    background:#28a745;
+}
+
+.completed{
+    background:#6c757d;
+}
+
+.cancelled{
+    background:#dc3545;
+}
+
+/* ===========================
+   BUTTONS
+=========================== */
+
+button{
+    border:none;
+    outline:none;
+    padding:8px 14px;
+    margin-right:6px;
+    border-radius:8px;
+    cursor:pointer;
+    color:white;
+    transition:.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+.view-btn{
+    background:#17a2b8;
+}
+
+.edit-btn{
+    background:#ffc107;
+    color:#222;
+}
+
+.stop-btn{
+    background:#dc3545;
+}
+
+.delete-btn{
+    background:#343a40;
+}
+
+/* ===========================
+   TAGS
+=========================== */
+
+.tag{
+    display:inline-block;
+    background:#dc3558;
+    color:white;
+    padding:7px 15px;
+    border-radius:30px;
+    margin:5px;
+    font-size:14px;
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:900px){
+
+.movie-header{
+    flex-direction:column;
+    align-items:center;
+}
+
+.poster img{
+    width:220px;
+    height:320px;
+}
+
+.movie-info{
+    width:100%;
+}
+
+.stats{
+    grid-template-columns:repeat(2,1fr);
+}
+
+.people-grid{
+    grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+@media(max-width:600px){
+
+.container{
+    width:95%;
+}
+
+.stats{
+    grid-template-columns:1fr;
+}
+
+.people-grid{
+    grid-template-columns:1fr;
+}
+
+table{
+    display:block;
+    overflow-x:auto;
+    white-space:nowrap;
+}
+
+.movie-info h1{
+    font-size:30px;
+}
+
+}

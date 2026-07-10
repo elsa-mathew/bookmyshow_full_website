@@ -1,0 +1,458 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>{{ movie.movie_name }}</title>
+
+<link rel="stylesheet"
+href="{% static 'css/movie_details.css' %}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="/api/theatre/" class="back-btn">
+
+← Back to Movies
+
+</a>
+
+<div class="movie-header">
+
+<div class="poster">
+
+{% if movie.poster %}
+
+<img src="{{ movie.poster.url }}">
+
+{% else %}
+
+<img src="{% static 'images/default_movie.jpg' %}">
+
+{% endif %}
+
+</div>
+
+<div class="movie-info">
+
+<h1>
+
+{{ movie.movie_name }}
+
+</h1>
+
+<p>
+
+<b>Duration :</b>
+
+{{ movie.duration }}
+
+</p>
+
+<p>
+
+<b>Certificate :</b>
+
+{{ movie.certificate }}
+
+</p>
+
+<p>
+
+<b>Release :</b>
+
+{{ movie.release_date }}
+
+</p>
+
+<p>
+
+<b>Status :</b>
+
+{{ movie.status }}
+
+</p>
+
+<p>
+
+<b>Languages :</b>
+
+{% for language in movie.languages.all %}
+
+{{ language.name }}
+
+{% if not forloop.last %}
+
+,
+
+{% endif %}
+
+{% endfor %}
+
+</p>
+
+<p>
+
+<b>Genres :</b>
+
+{% for genre in movie.genres.all %}
+
+{{ genre.name }}
+
+{% if not forloop.last %}
+
+,
+
+{% endif %}
+
+{% endfor %}
+
+</p>
+
+<p>
+
+<a href="{{ movie.trailer }}" target="_blank">
+
+▶ Watch Trailer
+
+</a>
+
+</p>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+
+Description
+
+</h2>
+
+<p>
+
+{{ movie.description }}
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>
+
+Movie Statistics
+
+</h2>
+
+<div class="stats">
+
+<div>
+
+<h3>
+
+{{ total_shows }}
+
+</h3>
+
+<p>Total Shows</p>
+
+</div>
+
+<div>
+
+<h3>
+
+{{ upcoming_shows }}
+
+</h3>
+
+<p>Upcoming</p>
+
+</div>
+
+<div>
+
+<h3>
+
+{{ running_shows }}
+
+</h3>
+
+<p>Running</p>
+
+</div>
+
+<div>
+
+<h3>
+
+{{ completed_shows }}
+
+</h3>
+
+<p>Completed</p>
+
+</div>
+
+<div>
+
+<h3>
+
+{{ total_bookings }}
+
+</h3>
+
+<p>Bookings</p>
+
+</div>
+
+<div>
+
+<h3>
+
+₹{{ total_revenue }}
+
+</h3>
+
+<p>Revenue</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+
+Cast
+
+</h2>
+
+<div class="people-grid">
+
+{% for cast in casts %}
+
+<div class="person-card">
+
+{% if cast.actor_image %}
+
+<img src="{{ cast.actor_image.url }}">
+
+{% endif %}
+
+<h4>
+
+{{ cast.actor_name }}
+
+</h4>
+
+<p>
+
+{{ cast.character_name }}
+
+</p>
+
+</div>
+
+{% empty %}
+
+<p>
+
+No Cast Added
+
+</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+
+Crew
+
+</h2>
+
+<div class="people-grid">
+
+{% for crew in crews %}
+
+<div class="person-card">
+
+{% if crew.image %}
+
+<img src="{{ crew.image.url }}">
+
+{% endif %}
+
+<h4>
+
+{{ crew.name }}
+
+</h4>
+
+<p>
+
+{{ crew.role }}
+
+</p>
+
+</div>
+
+{% empty %}
+
+<p>
+
+No Crew Added
+
+</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+
+Shows
+
+</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Date</th>
+
+<th>Screen</th>
+
+<th>Time</th>
+
+<th>Status</th>
+
+<th>Bookings</th>
+
+<th>Revenue</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for show in shows %}
+
+<tr>
+
+<td>
+
+{{ show.show_date }}
+
+</td>
+
+<td>
+
+{{ show.screen.screen_name }}
+
+</td>
+
+<td>
+
+{{ show.start_time }}
+
+-
+
+{{ show.end_time }}
+
+</td>
+
+<td>
+
+{{ show.current_status }}
+
+</td>
+
+<td>
+
+{{ show.total_bookings }}
+
+</td>
+
+<td>
+
+₹{{ show.revenue }}
+
+</td>
+
+<td>
+
+<button>
+
+View
+
+</button>
+
+<button>
+
+Edit
+
+</button>
+
+<button
+
+class="stop-btn"
+
+onclick="stopShow('{{ show.id }}')">
+
+Stop
+
+</button>
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="7">
+
+No Shows Available
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

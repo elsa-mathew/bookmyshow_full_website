@@ -5,6 +5,8 @@ from .models import UserProfile
 
 def login_page(request):
 
+
+
     if request.method == "POST":
 
         print("post received")
